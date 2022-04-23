@@ -1,3 +1,4 @@
+PRUEBA MODIFICAR ARCHIVO EN GIT
 !classDefinition: #PruebasReproduccionDeAvispas category: 'AvispasYAbejasParte2'!
 DenotativeObject subclass: #PruebasReproduccionDeAvispas
 	instanceVariableNames: ''
@@ -207,23 +208,23 @@ test21CuandoLaraLaAvispaNoTieneRecursosNoDejaUnHuevo
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:52'!
 cantidadDeHuevosConLaFirmaGeneticaDeLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:57'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:03'!
 cantidadDeHuevosConLaFirmaGeneticaDeOrnella
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:09'!
 cantidadDeHuevosConLaFirmaGeneticaDePolly
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/18/2022 18:43:42'!
 habitat
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/18/2022 18:54:17'!
 hacerQueElHabitatTengaLosRecursosSuficientes
@@ -231,35 +232,35 @@ hacerQueElHabitatTengaLosRecursosSuficientes
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:28'!
 laAvispaLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:33'!
 laAvispaOriana
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:39'!
 laAvispaOrnella
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:46'!
 laAvispaPolly
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:27'!
 queElHabitatTengaDosOrugasMas
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:33'!
 queElHabitatTengaDosPolillasMas
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:37'!
 queElHabitatTengaUnaOrugaMas
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:42'!
 queElHabitatTengaUnaPolillaMas
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaciï¿½n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/18/2022 18:44:02'!
 retrocederElHabitatAlInicioDeLosTiempos
