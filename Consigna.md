@@ -105,4 +105,3 @@ unaColeccion sum: [ : unNumero | unNumero ] ifEmpty: [ 0 ]
 unBooleano ifTrue: [ “envios de mensajes para cuando unBooleano es true” ] ifFalse: [ “envios de mensajes para cuando unBooleano es false”  ]
 ```
 
-
