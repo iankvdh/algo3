@@ -260,13 +260,13 @@ newCustomersBookWithSuspendedCustomer: nameOfCustomer
 	
 	^customerBook! !
 
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 4/30/2022 20:08:10'!
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'iv 5/2/2022 19:12:45'!
 test: aBlock ShouldNotTakeMoreThan: anAmountOfTime
 
 	| millisecondsBeforeRunning millisecondsAfterRunning |
 	
 	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	aBlock.
+	aBlock value.
 	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
 	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (anAmountOfTime)
