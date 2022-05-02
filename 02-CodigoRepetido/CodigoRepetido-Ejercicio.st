@@ -40,12 +40,12 @@ CODIGO ORIGINAL:
 "
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 20:18:54'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:06:53'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	|customerBook|
 	
-	customerBook := 	self newCustomersBookWhithActiveCustomerCalled: 'Paul McCartney'.
+	customerBook := 	self newCustomersBookWhithActiveCustomer: 'Paul McCartney'.
 	
 	self test: [customerBook removeCustomerNamed: 'Paul McCartney'.] ShouldNotTakeMoreThan: 100 * millisecond.
 
@@ -66,14 +66,14 @@ CODIGO ORIGINAL:
 	
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 21:20:24'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:39:39'!
 test03CanNotAddACustomerWithEmptyName 
 	
 	| customerBook |
 	
 	customerBook := CustomerBook new.
-	
-	self run: [customerBook addCustomerNamed: ''] errorMessageIs: [CustomerBook customerCanNotBeEmptyErrorMessage] assertIsTrue: [customerBook isEmpty] assertIsTrue: [1=1] errorTipe: Error.
+
+	self assertClosure: [customerBook addCustomerNamed: ''] RaisesError: [CustomerBook customerCanNotBeEmptyErrorMessage] ofType: Error andCondition: [customerBook isEmpty].
 	
 "
 CODIGO ORIGINAL:
@@ -90,14 +90,14 @@ CODIGO ORIGINAL:
 			self assert: customerBook isEmpty ]
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 21:20:45'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:39:39'!
 test04CanNotRemoveAnInvalidCustomer
 
 	| customerBook |
 			
-	customerBook := self newCustomersBookWhithActiveCustomerCalled: 'johnLennon'.
+	customerBook := self newCustomersBookWhithActiveCustomer: 'johnLennon'.
 	
-	self run: [customerBook removeCustomerNamed: 'Paul McCartney'] errorMessageIs: [nil] assertIsTrue: [customerBook numberOfCustomers = 1] assertIsTrue: [ (customerBook includesCustomerNamed: 'johnLennon')] errorTipe: NotFound.
+	self assertClosure: [customerBook removeCustomerNamed: 'Paul McCartney'] RaisesError: [nil] ofType: NotFound andCondition: [customerBook numberOfCustomers = 1 and: (customerBook includesCustomerNamed: 'johnLennon')].
 
 "
 CODIGO ORIGINAL:
@@ -115,14 +115,14 @@ CODIGO ORIGINAL:
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 20:17:25'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:18:44'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 
 	| customerBook |
 	
-	customerBook := self newCustomersBookWhithSuspendedCustomerCalled: 'Paul McCartney'.
+	customerBook := self newCustomersBookWithSuspendedCustomer: 'Paul McCartney'.
 
-	self check: customerBook numberOfActiveCustomers: 0 numberOfSuspendedCustomers: 1 numberOfCustomers: 1.
+	self assertCustomerBook: customerBook ActiveCustomers: 0 SuspendedCustomers: 1.
 	self assert: (customerBook includesCustomerNamed: 'Paul McCartney').
 
 
@@ -142,15 +142,15 @@ CODIGO ORIGINAL:
 	self assert: (customerBook includesCustomerNamed: paulMcCartney).
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 20:17:39'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:18:52'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
 	| customerBook |
 	
-	customerBook := self newCustomersBookWhithSuspendedCustomerCalled: 'Paul McCartney'.
+	customerBook := self newCustomersBookWithSuspendedCustomer: 'Paul McCartney'.
 	customerBook removeCustomerNamed: 'Paul McCartney'.
 	
-	self check: customerBook numberOfActiveCustomers: 0 numberOfSuspendedCustomers: 0 numberOfCustomers: 0.
+	self assertCustomerBook: customerBook ActiveCustomers: 0 SuspendedCustomers: 0.
 	self deny: (customerBook includesCustomerNamed: 'Paul McCartney').
 	
 	
@@ -174,14 +174,14 @@ CODIGO ORIGINAL:
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 21:21:06'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:39:39'!
 test07CanNotSuspendAnInvalidCustomer
 	
 	| customerBook |
 			
-	customerBook :=  self newCustomersBookWhithActiveCustomerCalled: 'John Lennon'.
+	customerBook :=  self newCustomersBookWhithActiveCustomer: 'John Lennon'.
 	
-	self run: [customerBook suspendCustomerNamed: 'Ringo Starr'.] errorMessageIs: [nil] assertIsTrue: [customerBook numberOfCustomers = 1] assertIsTrue: [(customerBook includesCustomerNamed: 'John Lennon')] errorTipe: CantSuspend.
+	self assertClosure: [customerBook suspendCustomerNamed: 'Ringo Starr'.] RaisesError: [nil] ofType: CantSuspend andCondition: [customerBook numberOfCustomers = 1 and: (customerBook includesCustomerNamed: 'John Lennon')].
 	
 
 "
@@ -199,14 +199,14 @@ CODIGO ORGINIAL:
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'IV 5/1/2022 21:21:17'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:39:39'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 
 	| customerBook |
 			
-	customerBook := self newCustomersBookWhithSuspendedCustomerCalled: 'John Lennon'.
+	customerBook := self newCustomersBookWithSuspendedCustomer: 'John Lennon'.
 
-	self run: [customerBook suspendCustomerNamed: 'John Lennon'] errorMessageIs: [nil] assertIsTrue: [customerBook numberOfCustomers = 1.] assertIsTrue: [(customerBook includesCustomerNamed: 'John Lennon')] errorTipe: CantSuspend.
+	self assertClosure: [customerBook suspendCustomerNamed: 'John Lennon'] RaisesError: [nil] ofType: CantSuspend andCondition: [customerBook numberOfCustomers = 1 and: (customerBook includesCustomerNamed: 'John Lennon')].
 
 "
 CODIGO ORGINIAL:
@@ -226,40 +226,39 @@ CODIGO ORGINIAL:
 "! !
 
 
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 5/1/2022 19:28:27'!
-check: customerBook numberOfActiveCustomers: numberActiveCustomers numberOfSuspendedCustomers: numberSuspendedCustomers numberOfCustomers: numberCustomers
-	
-	self assert: numberActiveCustomers equals: customerBook numberOfActiveCustomers.
-	self assert: numberSuspendedCustomers equals: customerBook numberOfSuspendedCustomers.
-	self assert: numberCustomers equals: customerBook numberOfCustomers.
-	! !
-
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 5/1/2022 20:13:44'!
-newCustomersBookWhithActiveCustomerCalled: nameOfCustomer
-
-	^CustomerBook new addCustomerNamed: nameOfCustomer! !
-
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 5/1/2022 20:16:48'!
-newCustomersBookWhithSuspendedCustomerCalled: nameOfCustomer
-
-	| customerBook |
-	
-	customerBook := self newCustomersBookWhithActiveCustomerCalled: nameOfCustomer.
-	customerBook suspendCustomerNamed: nameOfCustomer.
-	
-	^customerBook! !
-
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 5/1/2022 21:19:53'!
-run: aBlock errorMessageIs: errorMessage assertIsTrue: affirmation1 assertIsTrue: affirmation2 errorTipe: errorTipe
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'md 5/2/2022 01:39:39'!
+assertClosure: aBlock RaisesError: errorMessage ofType: errorType andCondition: affirmation
 
 	[ aBlock value.
 	self fail ]
-		on: errorTipe 
+		on: errorType 
 		do: [ :anError | 
 			self assert: anError messageText = errorMessage value .
-			self assert: affirmation1 value.
-			self assert: affirmation2 value. ]
+			self assert: affirmation value. ]
 ! !
+
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'md 5/2/2022 01:15:43'!
+assertCustomerBook: aCustomerBook ActiveCustomers: numberActiveCustomers SuspendedCustomers: numberSuspendedCustomers
+	
+	self assert: numberActiveCustomers equals: aCustomerBook numberOfActiveCustomers.
+	self assert: numberSuspendedCustomers equals: aCustomerBook numberOfSuspendedCustomers.
+	self assert: numberSuspendedCustomers + numberActiveCustomers equals: aCustomerBook numberOfCustomers.
+! !
+
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'md 5/2/2022 01:06:53'!
+newCustomersBookWhithActiveCustomer: nameOfCustomer
+
+	^CustomerBook new addCustomerNamed: nameOfCustomer! !
+
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'md 5/2/2022 01:06:53'!
+newCustomersBookWithSuspendedCustomer: nameOfCustomer
+
+	| customerBook |
+	
+	customerBook := self newCustomersBookWhithActiveCustomer: nameOfCustomer.
+	customerBook suspendCustomerNamed: nameOfCustomer.
+	
+	^customerBook! !
 
 !CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 4/30/2022 20:08:10'!
 test: aBlock ShouldNotTakeMoreThan: anAmountOfTime
@@ -300,11 +299,11 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'customer management' stamp: 'md 5/2/2022 00:57:22'!
 addCustomerNamed: aName
 
 	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
-	((active includes: aName) or: [suspended includes: aName]) ifTrue: [ self signalCustomerAlreadyExists ].
+	(self includesCustomerNamed: aName) ifTrue: [ self signalCustomerAlreadyExists ].
 	
 	active add: aName ! !
 
@@ -313,10 +312,10 @@ numberOfActiveCustomers
 	
 	^active size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'customer management' stamp: 'md 5/2/2022 00:58:25'!
 numberOfCustomers
 	
-	^active size + suspended size! !
+	^self numberOfActiveCustomers + self numberOfSuspendedCustomers ! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:09'!
 numberOfSuspendedCustomers
