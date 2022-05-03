@@ -90,14 +90,14 @@ CODIGO ORIGINAL:
 			self assert: customerBook isEmpty ]
 "! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'md 5/2/2022 01:39:39'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'iv 5/2/2022 10:46:26'!
 test04CanNotRemoveAnInvalidCustomer
 
 	| customerBook |
 			
-	customerBook := self newCustomersBookWhithActiveCustomer: 'johnLennon'.
+	customerBook := self newCustomersBookWhithActiveCustomer: 'John Lennon'.
 	
-	self assertClosure: [customerBook removeCustomerNamed: 'Paul McCartney'] RaisesError: [nil] ofType: NotFound andCondition: [customerBook numberOfCustomers = 1 and: (customerBook includesCustomerNamed: 'johnLennon')].
+	self assertClosure: [customerBook removeCustomerNamed: 'Paul McCartney'] RaisesError: [nil] ofType: NotFound andCondition: [customerBook numberOfCustomers = 1 and: (customerBook includesCustomerNamed: 'John Lennon')].
 
 "
 CODIGO ORIGINAL:
@@ -260,13 +260,13 @@ newCustomersBookWithSuspendedCustomer: nameOfCustomer
 	
 	^customerBook! !
 
-!CustomerBookTest methodsFor: 'abstractions' stamp: 'IV 4/30/2022 20:08:10'!
+!CustomerBookTest methodsFor: 'abstractions' stamp: 'iv 5/2/2022 19:12:45'!
 test: aBlock ShouldNotTakeMoreThan: anAmountOfTime
 
 	| millisecondsBeforeRunning millisecondsAfterRunning |
 	
 	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	aBlock.
+	aBlock value.
 	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
 	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (anAmountOfTime)
