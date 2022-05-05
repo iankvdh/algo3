@@ -135,9 +135,12 @@ Object subclass: #Numero
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/2/2022 21:25:12'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/5/2022 16:03:59'!
 * aMultiplier 
 
+	self subclassResponsibility.
+	
+"CODIGO ORIGINAL	
 	(type = #Entero and: [aMultiplier type = #Entero]) ifTrue:	
 		[ ^self class with: value * aMultiplier integerValue ].
 		
@@ -145,11 +148,15 @@ Object subclass: #Numero
 		[ ^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator) ].
 		
 	self error: 'Tipo de número no soportado'
+"
 	! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/2/2022 21:25:12'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/5/2022 15:59:10'!
 + anAdder 
+
+	self subclassResponsibility.
 	
+"CODIGO ORIGINAL	
 	(type = #Entero and: [anAdder type = #Entero]) ifTrue:
 		[ ^self class with: value + anAdder integerValue ].
 	
@@ -162,19 +169,25 @@ Object subclass: #Numero
 		^ self class with: newNumerator over: newDenominator ].
 	
 	self error: 'Tipo de número no soportado'
+"
 	! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/2/2022 21:25:13'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'iv 5/5/2022 15:57:26'!
 negated
+
+	self subclassResponsibility.
 	
+"CODIGO ORIGINAL
 	type = #Entero ifTrue:
 		[ ^self * (self class with: -1) ].
 	type = #Fraccion ifTrue:
-		[ ^self class with: numerator * (self class with: -1) over: denominator ].! !
+		[ ^self class with: numerator * (self class with: -1) over: denominator ].
+"! !
 
 
-!Numero methodsFor: 'testing' stamp: 'iv 5/2/2022 21:53:26'!
+!Numero methodsFor: 'testing' stamp: 'iv 5/5/2022 16:04:35'!
 isNegative
+
 		self subclassResponsibility.
 	
 "CODIGO ORIGINAL
@@ -185,8 +198,9 @@ isNegative
 "
 ! !
 
-!Numero methodsFor: 'testing' stamp: 'iv 5/2/2022 21:52:21'!
+!Numero methodsFor: 'testing' stamp: 'iv 5/5/2022 16:04:37'!
 isOne
+
 	self subclassResponsibility.
 	
 "CODIGO ORIGINAL
@@ -341,6 +355,36 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
+!Entero methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 16:02:19'!
+* aMultiplier 
+
+	(aMultiplier class = Entero) ifTrue:	
+		[ ^self class with: value * aMultiplier integerValue ].
+		
+	self error: 'Tipo de número no soportado'
+	
+"CODIGO v1.0
+	(type = #Entero and: [aMultiplier type = #Entero]) ifTrue:	
+		[ ^self class with: value * aMultiplier integerValue ].
+		
+	self error: 'Tipo de número no soportado'
+"! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 16:01:37'!
++ anAdder 
+	
+	(anAdder class = Entero) ifTrue:
+		[ ^self class with: value + anAdder integerValue ].
+	
+	self error: 'Tipo de número no soportado'
+	
+"CODIGO v1.0
+	(anAdder type = #Entero) ifTrue:
+		[ ^self class with: value + anAdder integerValue ].
+	
+	self error: 'Tipo de número no soportado'
+"! !
+
 !Entero methodsFor: 'as yet unclassified' stamp: 'iv 5/2/2022 21:53:57'!
 isNegative
 	^value < 0 
@@ -354,6 +398,12 @@ isOne
 isZero
 	^value = 0.! !
 
+!Entero methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 15:56:33'!
+negated
+	
+	^self * (self class with: -1).
+! !
+
 
 !classDefinition: #Fraccion category: 'Numeros-Parte1-Ejercicio'!
 Numero subclass: #Fraccion
@@ -361,6 +411,49 @@ Numero subclass: #Fraccion
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 16:03:28'!
+* aMultiplier 
+	
+	(aMultiplier class = Fraccion) ifTrue:
+		[ ^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator) ].
+		
+	self error: 'Tipo de número no soportado'
+
+"CODIGO v1.0
+	(type = #Entero and: [aMultiplier type = #Entero]) ifTrue:	
+		[ ^self class with: value * aMultiplier integerValue ].
+		
+	(type = #Fraccion and: [aMultiplier type = #Fraccion]) ifTrue:
+		[ ^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator) ].
+		
+	self error: 'Tipo de número no soportado'
+"! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 16:01:30'!
++ anAdder 
+		
+	(anAdder class = Fraccion) ifTrue:
+		[ | newNumerator newDenominator |
+		
+		newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
+		newDenominator := denominator * anAdder denominator.
+		
+		^ self class with: newNumerator over: newDenominator ].
+	
+	self error: 'Tipo de número no soportado'
+	
+"CODIGO v1.0
+	(anAdder type = #Fraccion) ifTrue:
+		[ | newNumerator newDenominator |
+		
+		newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
+		newDenominator := denominator * anAdder denominator.
+		
+		^ self class with: newNumerator over: newDenominator ].
+	
+	self error: 'Tipo de número no soportado'
+"	! !
 
 !Fraccion methodsFor: 'as yet unclassified' stamp: 'iv 5/2/2022 21:54:12'!
 isNegative
@@ -373,3 +466,8 @@ isOne
 !Fraccion methodsFor: 'as yet unclassified' stamp: 'iv 5/2/2022 21:37:50'!
 isZero
 	^false! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'iv 5/5/2022 15:57:02'!
+negated
+
+	^self class with: numerator * (self class with: -1) over: denominator.! !
