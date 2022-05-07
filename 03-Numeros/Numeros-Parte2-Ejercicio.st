@@ -364,64 +364,26 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 13:41:15'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:46:09'!
 * aMultiplier 
 
 	^aMultiplier multiplyAnEntero: self.
-	
-	"( aMultiplier isKindOf: Entero ) ifTrue: [ ^self class with: value * aMultiplier integerValue ].
-	
-	( aMultiplier isKindOf: Fraccion ) ifTrue: [ ^aMultiplier class with: ( self * aMultiplier numerator ) over: aMultiplier denominator ]."
-	
-
-"CODIGO ORIGINAL
-	^self class with: value * aMultiplier integerValue
-"
-	! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 11:49:21'!
-+ anAdder 
-
-	 ^anAdder beAddedToAnEntero: self.
-	
-	
-	"( anAdder isKindOf: Entero ) ifTrue: [ ^self class with: value + anAdder integerValue ].
-	
-	( anAdder isKindOf: Fraccion ) ifTrue: [ ^anAdder class with: ( self * anAdder denominator + anAdder numerator ) over: anAdder denominator ]."
-	
-
-"CODIGO ORIGINAL
-	^self class with: value + anAdder integerValue
-"
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 12:14:49'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:46:29'!
++ anAdder 
+
+	 ^anAdder beAddedToAnEntero: self.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:46:35'!
 - aSubtrahend 
 
-	^aSubtrahend beSubtractedToAnEntero: self.
+	^aSubtrahend beSubtractedToAnEntero: self.! !
 
-	"( aSubtrahend isKindOf: Entero ) ifTrue: [ ^self class with: value - aSubtrahend integerValue].
-	
-	( aSubtrahend isKindOf: Fraccion ) ifTrue: [ ^aSubtrahend class with: ( self * aSubtrahend denominator - aSubtrahend numerator ) over: aSubtrahend denominator ]."
-	
-
-"CODIGO ORIGINAL
-	^ self class with: value - aSubtrahend integerValue.
-"! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 13:33:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:47:17'!
 / aDivisor 
 
-	^aDivisor divideAnEntero: self.
-	
-	"( aDivisor isKindOf: Entero ) ifTrue: [ ^Fraccion with: self over: aDivisor ].
-	
-	( aDivisor isKindOf: Fraccion ) ifTrue: [ ^Fraccion with: ( self * aDivisor denominator ) over: aDivisor numerator ]."
-	
-
-"CODIGO ORIGINAL
-	^Fraccion with: self over: aDivisor
-"! !
+	^aDivisor divideAnEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -516,10 +478,10 @@ beSubtractedToAnEntero: anEnteroMinuend
 
 	^self class with: anEnteroMinuend integerValue - self integerValue.! !
 
-!Entero methodsFor: 'private' stamp: 'iv 5/7/2022 13:35:39'!
+!Entero methodsFor: 'private' stamp: 'md 5/7/2022 16:53:53'!
 divideAFraccion: aFraccionDividend
 
-	^aFraccionDividend class with: aFraccionDividend numerator over: aFraccionDividend * self.! !
+	^aFraccionDividend class with: aFraccionDividend numerator over: aFraccionDividend denominator * self.! !
 
 !Entero methodsFor: 'private' stamp: 'iv 5/7/2022 13:34:36'!
 divideAnEntero: anEnteroDividend
@@ -563,79 +525,25 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 13:40:57'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:51:57'!
 * aMultiplier 
 
-	^aMultiplier multiplyAFraccion: self.
-	
-	"( aMultiplier isKindOf: Entero ) ifTrue: [ ^self class with: ( numerator * aMultiplier ) over: denominator ].
-	
-	( aMultiplier isKindOf: Fraccion ) ifTrue: [ ^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator) ]."
-	
+	^aMultiplier multiplyAFraccion: self.! !
 
-"CODIGO ORIGINAL
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
-"
-	! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 11:52:16'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:52:03'!
 + anAdder 
 	
-	^anAdder beAddedToAFraccion: self.
+	^anAdder beAddedToAFraccion: self.! !
 
-	"( anAdder isKindOf: Entero ) ifTrue: [ ^self class with: ( anAdder *  denominator + numerator ) over: denominator ].
-	
-	( anAdder isKindOf: Fraccion ) ifTrue: [ | newNumerator newDenominator |
-		newNumerator := ( numerator * anAdder denominator) + (anAdder numerator * denominator).
-		newDenominator := (anAdder denominator * denominator).
-		
-		^self class with: newNumerator over: newDenominator ]."
-	
-
-"CODIGO ORIGINAL
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
-	
-	^newNumerator / newDenominator 
-"! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'iv 5/7/2022 12:30:21'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 16:52:08'!
 - aSubtrahend 
 
 	^aSubtrahend beSubtractedToAFraccion: self.
-	
-	"( aSubtrahend isKindOf: Entero ) ifTrue: [ ^self class with: ( numerator - (aSubtrahend * denominator) ) over: denominator ].
-	
-	( aSubtrahend isKindOf: Fraccion ) ifTrue: [ | newNumerator newDenominator |
-		newNumerator := ( numerator * aSubtrahend denominator) - (aSubtrahend numerator * denominator).
-		newDenominator := (aSubtrahend denominator * denominator).
-		
-		^self class with: newNumerator over: newDenominator ]."
-	
-
-"CODIGO ORIGINAL
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
-"
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'iv 5/6/2022 20:13:58'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 17:01:31'!
 / aDivisor 
-
-	( aDivisor isKindOf: Entero ) ifTrue: [ ^self class with: numerator over: denominator * aDivisor ].
-	
-	( aDivisor isKindOf: Fraccion ) ifTrue: [ ^self class with: ( numerator * aDivisor denominator ) over: denominator * aDivisor numerator ].
-	
-
-"CODIGO ORIGINAL
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)
-"! !
+	^aDivisor divideAFraccion: self! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
