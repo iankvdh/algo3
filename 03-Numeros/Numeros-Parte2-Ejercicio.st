@@ -734,10 +734,10 @@ divideAnEntero: anEnteroDividend
 
 	^self class with: anEnteroDividend * denominator over: numerator .! !
 
-!Fraccion methodsFor: 'private' stamp: 'iv 5/7/2022 13:40:57'!
+!Fraccion methodsFor: 'private' stamp: 'iv 5/7/2022 14:02:15'!
 multiplyAFraccion: aFraccionMultiplier
 	
-	^( aFraccionMultiplier numerator * numerator) / ( aFraccionMultiplier denominator * denominator ).! !
+	^self class with: (numerator * aFraccionMultiplier numerator ) over: ( denominator * aFraccionMultiplier denominator ).! !
 
 !Fraccion methodsFor: 'private' stamp: 'iv 5/7/2022 13:41:15'!
 multiplyAnEntero: anEnteroMultiplier
