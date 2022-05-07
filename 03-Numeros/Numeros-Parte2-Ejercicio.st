@@ -385,19 +385,21 @@ Numero subclass: #Entero
 
 	^aDivisor divideAnEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'md 5/7/2022 17:56:19'!
 fibonacci
-
-	| one two |
-	
-	one := Entero with: 1.
-	two := Entero with: 2.
+	| current_fibonacci previous_fibonacci aux iterator |	
+	current_fibonacci := Entero with: 1.
+	previous_fibonacci := Entero with: 0.
 	
 	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-	
-	^ (self - one) fibonacci + (self - two) fibonacci
-		! !
+	iterator := value.
+	[iterator > 0] whileTrue: 	[
+		iterator := iterator - 1. 
+		aux := current_fibonacci.
+		current_fibonacci := current_fibonacci + previous_fibonacci.
+		previous_fibonacci := aux.
+	].
+	^current_fibonacci! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
