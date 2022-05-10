@@ -646,10 +646,10 @@ fibonacci
 EnteroMayorAUno class
 	instanceVariableNames: ''!
 
-!EnteroMayorAUno class methodsFor: 'as yet unclassified' stamp: 'iv 5/10/2022 12:43:19'!
+!EnteroMayorAUno class methodsFor: 'as yet unclassified' stamp: 'iv 5/10/2022 14:17:10'!
 canInstantiateWith: aValue
 	
-	^aValue > 1.! !
+	^false! !
 
 
 !classDefinition: #EnteroMayorCero category: 'Numeros-Parte2-Ejercicio'!
