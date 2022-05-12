@@ -152,39 +152,42 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'Initialization' stamp: 'jmd 5/12/2022 08:23:07'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
 initialize
-	elements := OrderedCollection new! !
 
+	elements := OrderedCollection new.! !
 
-!OOStack methodsFor: 'Error signals' stamp: 'jmd 5/12/2022 08:34:43'!
-signalStackEmptyError
-
-	self error: self class stackEmptyErrorDescription! !
-
-
-!OOStack methodsFor: 'Reading' stamp: 'jmd 5/12/2022 08:22:15'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
 isEmpty
-	^elements size = 0! !
+	
+	^elements isEmpty.! !
 
-!OOStack methodsFor: 'Reading' stamp: 'jmd 5/12/2022 08:39:46'!
-size
-	^elements size! !
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
+makeSureIsNotEmpty
+	
+	self isEmpty ifTrue: [ self error: OOStack stackEmptyErrorDescription ].! !
 
-!OOStack methodsFor: 'Reading' stamp: 'jmd 5/12/2022 08:38:05'!
-top
-	self isEmpty ifTrue: [self signalStackEmptyError].
-	^elements at: elements size! !
-
-
-!OOStack methodsFor: 'Adding and Removing' stamp: 'jmd 5/12/2022 08:35:45'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
 pop
-	self isEmpty ifTrue: [self signalStackEmptyError].
-	^elements removeLast! !
+	
+	self makeSureIsNotEmpty.
+	^elements removeLast.! !
 
-!OOStack methodsFor: 'Adding and Removing' stamp: 'jmd 5/12/2022 08:25:08'!
-push: newElement
-	elements addLast: newElement! !
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:56:11'!
+push: anElement
+	
+	elements addLast: anElement.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
+size
+
+	^elements size.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
+top
+
+	self makeSureIsNotEmpty.
+	^elements at: elements size.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
