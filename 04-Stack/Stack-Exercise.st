@@ -145,6 +145,85 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
+!classDefinition: #EmptyStack category: 'Stack-Exercise'!
+Object subclass: #EmptyStack
+	instanceVariableNames: 'aStack'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:51:35'!
+initializeWith: aNewStack
+	"comment stating purpose of message"
+	aStack := aNewStack! !
+
+!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:29'!
+pop
+	"comment stating purpose of message"
+	^self error: OOStack stackEmptyErrorDescription! !
+
+!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:44:20'!
+top
+	"comment stating purpose of message"
+	^self error: OOStack stackEmptyErrorDescription! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EmptyStack class' category: 'Stack-Exercise'!
+EmptyStack class
+	instanceVariableNames: ''!
+
+!EmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:51:13'!
+isValidStack: aStack
+	"comment stating purpose of message"
+	^aStack isEmpty! !
+
+!EmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:00:26'!
+with: aNewStack
+	"comment stating purpose of message"
+	^self new initializeWith: aNewStack! !
+
+
+!classDefinition: #NonEmptyStack category: 'Stack-Exercise'!
+Object subclass: #NonEmptyStack
+	instanceVariableNames: 'aStack'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
+!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:52:47'!
+initializeWith: aNewStack
+	"comment stating purpose of message"
+	aStack := aNewStack! !
+
+!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:43'!
+pop
+	"comment stating purpose of message"
+	^aStack safePop! !
+
+!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:53:12'!
+top
+	"comment stating purpose of message"
+	^aStack safeTop! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NonEmptyStack class' category: 'Stack-Exercise'!
+NonEmptyStack class
+	instanceVariableNames: ''!
+
+!NonEmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:52:17'!
+isValidStack: aStack
+	"comment stating purpose of message"
+	^aStack isEmpty not! !
+
+!NonEmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:00:20'!
+with: aNewStack
+	"comment stating purpose of message"
+	^self new initializeWith: aNewStack! !
+
+
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
 	instanceVariableNames: 'elements'
@@ -162,32 +241,43 @@ isEmpty
 	
 	^elements isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
-makeSureIsNotEmpty
-	
-	self isEmpty ifTrue: [ self error: OOStack stackEmptyErrorDescription ].! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:20'!
 pop
-	
-	self makeSureIsNotEmpty.
-	^elements removeLast.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:56:11'!
+	^self storageStatus pop.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:05:47'!
 push: anElement
 	
 	elements addLast: anElement.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:00'!
+safePop
+	
+	^elements removeLast.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:53:50'!
+safeTop
+
+	^elements at: elements size.
+	! !
 
 !OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
 size
 
 	^elements size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:55:35'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:57:59'!
+storageStatus
+	{EmptyStack. NonEmptyStack} detect: [:status | status isValidStack: self ] ifFound: [:status | ^status with: self] ifNone: [].! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:44:54'!
 top
 
-	self makeSureIsNotEmpty.
-	^elements at: elements size.! !
+	^self storageStatus top.
+	"
+	^elements at: elements size.
+	"! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
