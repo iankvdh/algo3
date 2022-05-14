@@ -240,138 +240,136 @@ self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = (Ordered
 ! !
 
 
-!classDefinition: #EmptyStack category: 'Stack-Exercise'!
-Object subclass: #EmptyStack
-	instanceVariableNames: 'aStack'
+!classDefinition: #EmptyStackStatus category: 'Stack-Exercise'!
+Object subclass: #EmptyStackStatus
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:51:35'!
-initializeWith: aNewStack
-	"comment stating purpose of message"
-	aStack := aNewStack! !
+!EmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:39:55'!
+initializeWith: aNewStack! !
 
-!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:29'!
+!EmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:21:29'!
 pop
-	"comment stating purpose of message"
+
 	^self error: OOStack stackEmptyErrorDescription! !
 
-!EmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:44:20'!
+!EmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:21:36'!
 top
-	"comment stating purpose of message"
+
 	^self error: OOStack stackEmptyErrorDescription! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'EmptyStack class' category: 'Stack-Exercise'!
-EmptyStack class
+!classDefinition: 'EmptyStackStatus class' category: 'Stack-Exercise'!
+EmptyStackStatus class
 	instanceVariableNames: ''!
 
-!EmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:51:13'!
-isValidStack: aStack
-	"comment stating purpose of message"
+!EmptyStackStatus class methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:40:42'!
+statusIsValidFor: aStack
+
 	^aStack isEmpty! !
 
-!EmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:00:26'!
+!EmptyStackStatus class methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:21:53'!
 with: aNewStack
-	"comment stating purpose of message"
+
 	^self new initializeWith: aNewStack! !
 
 
-!classDefinition: #NonEmptyStack category: 'Stack-Exercise'!
-Object subclass: #NonEmptyStack
+!classDefinition: #NonEmptyStackStatus category: 'Stack-Exercise'!
+Object subclass: #NonEmptyStackStatus
 	instanceVariableNames: 'aStack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:52:47'!
+!NonEmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:22:16'!
 initializeWith: aNewStack
-	"comment stating purpose of message"
+
 	aStack := aNewStack! !
 
-!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:43'!
+!NonEmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:22:06'!
 pop
-	"comment stating purpose of message"
+
 	^aStack safePop! !
 
-!NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:53:12'!
+!NonEmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:22:10'!
 top
-	"comment stating purpose of message"
+
 	^aStack safeTop! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'NonEmptyStack class' category: 'Stack-Exercise'!
-NonEmptyStack class
+!classDefinition: 'NonEmptyStackStatus class' category: 'Stack-Exercise'!
+NonEmptyStackStatus class
 	instanceVariableNames: ''!
 
-!NonEmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:52:17'!
-isValidStack: aStack
-	"comment stating purpose of message"
+!NonEmptyStackStatus class methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:41:00'!
+statusIsValidFor: aStack
+
 	^aStack isEmpty not! !
 
-!NonEmptyStack class methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:00:20'!
+!NonEmptyStackStatus class methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:22:00'!
 with: aNewStack
-	"comment stating purpose of message"
+
 	^self new initializeWith: aNewStack! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'elements'
+	instanceVariableNames: 'collection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
-initialize
-
-	elements := OrderedCollection new.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
-isEmpty
-	
-	^elements isEmpty.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:20'!
-pop
-
-	^self storageStatus pop.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:05:47'!
-push: anElement
-	
-	elements addLast: anElement.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 21:06:00'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
 safePop
 	
-	^elements removeLast.! !
+	^collection removeLast.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:53:50'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
 safeTop
 
-	^elements at: elements size.
+	^collection at: collection size.
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'IV 5/12/2022 13:53:22'!
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
+initialize
+
+	collection := OrderedCollection new.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
+isEmpty
+	
+	^collection isEmpty.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:26'!
+pop
+
+	^self stackStatus pop.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:59'!
+push: anElement
+	
+	collection add: anElement.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
 size
 
-	^elements size.! !
+	^collection size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:57:59'!
-storageStatus
-	{EmptyStack. NonEmptyStack} detect: [:status | status isValidStack: self ] ifFound: [:status | ^status with: self] ifNone: [].! !
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:35:43'!
+stackStatus
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:44:54'!
+	{EmptyStackStatus. NonEmptyStackStatus} detect: [ :stackStatus | stackStatus statusIsValidFor: self ] ifFound: [ :stackStatus | ^stackStatus with: self ] ifNone: [ self error: OOStack stackStatusErrorDescription ].! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:26'!
 top
 
-	^self storageStatus top.
-	"
-	^elements at: elements size.
-	"! !
+	^self stackStatus top.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -383,6 +381,11 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'iv 5/14/2022 11:33:31'!
+stackStatusErrorDescription
+	
+	^ 'Stack status is invalid'! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
