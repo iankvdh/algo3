@@ -176,6 +176,69 @@ Para los distintos tamaños de stack probar:
 Probar todos los casos que se mencionan en #createStack10Elements
 "! !
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 08:52:33'!
+test1StackVacioNoEncuentraCoincidentes
+| anEmptyStack matches |
+anEmptyStack := OOStack new.
+matches := SentenceFinderByPrefix new find: 'Si está bien hecho no' inStack: anEmptyStack.
+self assert: matches equals: OrderedCollection new.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:00:55'!
+test2PrefixVacioLevantaError
+| anEmptyStack |
+anEmptyStack := OOStack new.
+self
+	should: [ SentenceFinderByPrefix new find: '' inStack: anEmptyStack ]
+	raise:  Error 
+	withExceptionDo: [ :anError |
+		self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:01:31'!
+test3PrefixConWhitespaceLevantaError
+| anEmptyStack |
+anEmptyStack := OOStack new.
+self
+	should: [ SentenceFinderByPrefix new find: ' 					 ' inStack: anEmptyStack ]
+	raise:  Error 
+	withExceptionDo: [ :anError |
+		self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:08:06'!
+test4FinderNoModificaAlStackSiNoHayCoincidentes
+| aStack anotherStack |
+aStack := self createStack10Elements.
+anotherStack := self createStack10Elements.
+SentenceFinderByPrefix new find: 'Osias el osito mameluco' inStack: aStack.
+[aStack isEmpty] whileFalse: 
+	[ self assert: aStack pop = anotherStack pop ].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:08:45'!
+test5FinderNoModificaAlStackSiHayCoincidentes
+| aStack anotherStack |
+aStack := self createStack10Elements.
+anotherStack := self createStack10Elements.
+SentenceFinderByPrefix new find: 'Fuego tiene?' inStack: aStack.
+[aStack isEmpty] whileFalse: 
+	[ self assert: aStack pop = anotherStack pop ].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:23:43'!
+test6FinderEncuentraCoincidenciaStack1Elemento
+| aStack aStringToMatch matches |
+aStringToMatch := 'Queres una naranja?'.
+aStack := OOStack new push: aStringToMatch.
+matches := OrderedCollection new.
+matches add: aStringToMatch.
+self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = matches.
+! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:21:03'!
+test7FinderNoEncuentraCoincidenciaStack1Elemento
+| aStack aStringToMatch |
+aStringToMatch := 'Uhhhhh, _pepitas_'.
+aStack := OOStack new push: aStringToMatch.
+self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = (OrderedCollection new).
+! !
+
 
 !classDefinition: #EmptyStack category: 'Stack-Exercise'!
 Object subclass: #EmptyStack
@@ -329,12 +392,12 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 00:55:02'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:00:39'!
 find: aPrefix inStack: aStackOfSentences
 	"comment stating purpose of message"
 	| aCollectionOfSentences aSentence |
 	aPrefix withBlanksTrimmed = '' 
-		ifTrue: [self error: 'The prefix must contain at least one non whitespace character'].
+		ifTrue: [self error: SentenceFinderByPrefix invalidSyntaxErrorDescription].
 	aCollectionOfSentences	:= OrderedCollection new.
 	[aStackOfSentences isEmpty] whileFalse: 
 		[aSentence := aStackOfSentences pop. 
@@ -343,17 +406,12 @@ find: aPrefix inStack: aStackOfSentences
 	^aCollectionOfSentences select: [:anotherSentence | anotherSentence beginsWith: aPrefix].
 	! !
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 00:43:15'!
-findByPrefix: aPrefix inStack: aStackOfSentences
-	"comment stating purpose of message"
-	| aSentence matchingSentences |
-	aPrefix withBlanksTrimmed = '' 
-		ifTrue: [self error: 'The prefix must contain at least one non whitespace character'].
-		
-	aStackOfSentences isEmpty ifTrue: [^OrderedCollection new].
-	aSentence := aStackOfSentences pop.
-	matchingSentences := self findByPrefix: aPrefix inStack: aStackOfSentences.
-	(aSentence beginsWith: aPrefix) ifTrue: [matchingSentences add: aSentence].
-	aStackOfSentences push: aSentence.
-	^matchingSentences
-! !
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:00:39'!
+invalidSyntaxErrorDescription
+^'The prefix must contain at least one non whitespace character'! !
