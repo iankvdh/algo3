@@ -144,6 +144,38 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 01:21:40'!
+createStack10Elements
+| aStack |
+aStack := OOStack new.
+aStack push: 'Fuego tiene'. "Partial match"
+aStack push: 'Fuego tiene?'. "Exact match"
+aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Correct prefix"
+aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Repeated sentence"
+aStack push: 'fuego tiene?'. "Testing cap sensitivity"
+aStack push: 'got milk?'. "Testing mismatch on first character"
+aStack push: ' Fuego tiene?'. "Testing correct sentence preceded by whitespace"
+aStack push: 'Lampone se la come o-oo-o-o. Fuego tiene?'. "Testing correct sentence preceded by text"
+aStack push: ' '. "Testing string with only whitespace"
+aStack push: ''. "Testing an empty string"
+^aStack! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 01:21:10'!
+notasParaTests
+"
+Hacer pruebas con prefijo '' y prefijo '   ', entre otros.
+Hay que hacer pruebas con distintos tamaños de stack:
+	stack vacío
+	stack con un elemento
+	stack con varios elementos
+Para los distintos tamaños de stack probar:
+	prefijo con ningun elemento coincidente
+	prefijo con un unico elemento coincidente
+	prefijo con muchos elementos coincidentes
+	prefijo con todos los elementos coincidentes
+Probar todos los casos que se mencionan en #createStack10Elements
+"! !
+
 
 !classDefinition: #EmptyStack category: 'Stack-Exercise'!
 Object subclass: #EmptyStack
@@ -190,7 +222,6 @@ Object subclass: #NonEmptyStack
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-
 
 !NonEmptyStack methodsFor: 'as yet unclassified' stamp: 'iv 5/12/2022 20:52:47'!
 initializeWith: aNewStack
@@ -297,3 +328,32 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 00:55:02'!
+find: aPrefix inStack: aStackOfSentences
+	"comment stating purpose of message"
+	| aCollectionOfSentences aSentence |
+	aPrefix withBlanksTrimmed = '' 
+		ifTrue: [self error: 'The prefix must contain at least one non whitespace character'].
+	aCollectionOfSentences	:= OrderedCollection new.
+	[aStackOfSentences isEmpty] whileFalse: 
+		[aSentence := aStackOfSentences pop. 
+		aCollectionOfSentences addFirst: aSentence].
+	aCollectionOfSentences do: [:anotherSentence | aStackOfSentences push: anotherSentence].
+	^aCollectionOfSentences select: [:anotherSentence | anotherSentence beginsWith: aPrefix].
+	! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 00:43:15'!
+findByPrefix: aPrefix inStack: aStackOfSentences
+	"comment stating purpose of message"
+	| aSentence matchingSentences |
+	aPrefix withBlanksTrimmed = '' 
+		ifTrue: [self error: 'The prefix must contain at least one non whitespace character'].
+		
+	aStackOfSentences isEmpty ifTrue: [^OrderedCollection new].
+	aSentence := aStackOfSentences pop.
+	matchingSentences := self findByPrefix: aPrefix inStack: aStackOfSentences.
+	(aSentence beginsWith: aPrefix) ifTrue: [matchingSentences add: aSentence].
+	aStackOfSentences push: aSentence.
+	^matchingSentences
+! !
