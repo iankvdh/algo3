@@ -91,21 +91,18 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:26'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:33:40'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
 	stack := OOStack new.
-	self
-		should: [ stack pop ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+	
+	self assertThatABlock: [ stack pop ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:32:47'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
 	| stack  |
@@ -114,27 +111,29 @@ test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 	stack push: 'something'.
 	stack pop.
 	
-	self
-		should: [ stack pop ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+	self assertThatABlock: [  stack pop ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:44'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:32:16'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
 	stack := OOStack new.
+	
+	self assertThatABlock: [ stack top ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
+! !
+
+
+!OOStackTest methodsFor: 'private' stamp: 'iv 5/14/2022 16:31:50'!
+assertThatABlock: aBlock ShouldRaise: anErrorBlock
+
 	self
-		should: [ stack top ]
+		should: aBlock 
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
-		
-! !
+			self assert: anError messageText = anErrorBlock value ]! !
 
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
@@ -144,21 +143,37 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 01:21:40'!
-createStack10Elements
-| aStack |
-aStack := OOStack new.
-aStack push: 'Fuego tiene'. "Partial match"
-aStack push: 'Fuego tiene?'. "Exact match"
-aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Correct prefix"
-aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Repeated sentence"
-aStack push: 'fuego tiene?'. "Testing cap sensitivity"
-aStack push: 'got milk?'. "Testing mismatch on first character"
-aStack push: ' Fuego tiene?'. "Testing correct sentence preceded by whitespace"
-aStack push: 'Lampone se la come o-oo-o-o. Fuego tiene?'. "Testing correct sentence preceded by text"
-aStack push: ' '. "Testing string with only whitespace"
-aStack push: ''. "Testing an empty string"
-^aStack! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:11:10'!
+createStackWith10Elements
+	| aStack |
+	aStack := OOStack new.
+	aStack push: 'Fuego tiene'. "Partial match"
+	aStack push: 'Fuego tiene?'. "Exact match"
+	aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Correct prefix"
+	aStack push: 'Fuego tiene?Lampone sos un dulce de leche'. "Repeated sentence"
+	aStack push: 'fuego tiene?'. "Testing cap sensitivity"
+	aStack push: 'got milk?'. "Testing mismatch on first character"
+	aStack push: ' Fuego tiene?'. "Testing correct sentence preceded by whitespace"
+	aStack push: 'Lampone se la come o-oo-o-o. Fuego tiene?'. "Testing correct sentence preceded by text"
+	aStack push: ' '. "Testing string with only whitespace"
+	aStack push: ''. "Testing an empty string"
+	^aStack! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:10:40'!
+createStackWith7ElementsWithTheSamePrefix
+	| aStack |
+	
+	aStack := OOStack new.
+	{ 'win'. 'winter'. 'winner'. 'winter is coming'. 'windy'. 'winnable'. 'winter is windy' } do: [ :aSentence | aStack push: aSentence ].
+	"
+	aStack push: 'win'. 
+	aStack push: 'winter'. 
+	aStack push: 'winner'. 
+	aStack push: 'winter is coming'.
+	aStack push: 'windy'.
+	aStack push: 'winnable'.
+	aStack push: 'winter is windy'. "
+	^aStack! !
 
 !SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 01:21:10'!
 notasParaTests
@@ -176,68 +191,127 @@ Para los distintos tamaños de stack probar:
 Probar todos los casos que se mencionan en #createStack10Elements
 "! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 08:52:33'!
-test1StackVacioNoEncuentraCoincidentes
-| anEmptyStack matches |
-anEmptyStack := OOStack new.
-matches := SentenceFinderByPrefix new find: 'Si está bien hecho no' inStack: anEmptyStack.
-self assert: matches equals: OrderedCollection new.! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 15:58:09'!
+test01StackVacioNoEncuentraCoincidentes
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:00:55'!
-test2PrefixVacioLevantaError
-| anEmptyStack |
-anEmptyStack := OOStack new.
-self
-	should: [ SentenceFinderByPrefix new find: '' inStack: anEmptyStack ]
-	raise:  Error 
-	withExceptionDo: [ :anError |
-		self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ]! !
+	| anEmptyStack matches |
+	
+	anEmptyStack := OOStack new.
+	
+	matches := SentenceFinderByPrefix new find: 'Si está bien hecho no' inStack: anEmptyStack.
+	
+	self assert: matches isEmpty.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:01:31'!
-test3PrefixConWhitespaceLevantaError
-| anEmptyStack |
-anEmptyStack := OOStack new.
-self
-	should: [ SentenceFinderByPrefix new find: ' 					 ' inStack: anEmptyStack ]
-	raise:  Error 
-	withExceptionDo: [ :anError |
-		self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ]! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 15:58:16'!
+test02PrefixVacioLevantaError
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:08:06'!
-test4FinderNoModificaAlStackSiNoHayCoincidentes
-| aStack anotherStack |
-aStack := self createStack10Elements.
-anotherStack := self createStack10Elements.
-SentenceFinderByPrefix new find: 'Osias el osito mameluco' inStack: aStack.
-[aStack isEmpty] whileFalse: 
-	[ self assert: aStack pop = anotherStack pop ].! !
+	| anEmptyStack |
+	
+	anEmptyStack := OOStack new.
+	
+	self should: [ SentenceFinderByPrefix new find: '' inStack: anEmptyStack ]
+		raise:  Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:08:45'!
-test5FinderNoModificaAlStackSiHayCoincidentes
-| aStack anotherStack |
-aStack := self createStack10Elements.
-anotherStack := self createStack10Elements.
-SentenceFinderByPrefix new find: 'Fuego tiene?' inStack: aStack.
-[aStack isEmpty] whileFalse: 
-	[ self assert: aStack pop = anotherStack pop ].! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 15:58:22'!
+test03PrefixConWhitespaceLevantaError
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:23:43'!
-test6FinderEncuentraCoincidenciaStack1Elemento
-| aStack aStringToMatch matches |
-aStringToMatch := 'Queres una naranja?'.
-aStack := OOStack new push: aStringToMatch.
-matches := OrderedCollection new.
-matches add: aStringToMatch.
-self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = matches.
+	| anEmptyStack |
+	
+	anEmptyStack := OOStack new.
+	
+	self should: [ SentenceFinderByPrefix new find: ' 					 ' inStack: anEmptyStack ]
+		raise:  Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix invalidSyntaxErrorDescription ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:11:10'!
+test04FinderNoModificaAlStackSiNoHayCoincidentes
+
+	| aStack anotherStack |
+	
+	aStack := self createStackWith10Elements.
+	anotherStack := self createStackWith10Elements.
+	
+	SentenceFinderByPrefix new find: 'Osias el osito mameluco' inStack: aStack.
+	
+	[aStack isEmpty] whileFalse: [ self assert: aStack pop = anotherStack pop ].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:11:10'!
+test05FinderNoModificaAlStackSiHayCoincidentes
+
+	| aStack anotherStack |
+	
+	aStack := self createStackWith10Elements.
+	anotherStack := self createStackWith10Elements.
+	
+	SentenceFinderByPrefix new find: 'Fuego tiene?' inStack: aStack.
+	
+	[aStack isEmpty] whileFalse: [ self assert: aStack pop = anotherStack pop ].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 15:58:40'!
+test06FinderEncuentraCoincidenciaStack1Elemento
+
+	| aStack aStringToMatch matches |
+	
+	aStringToMatch := 'Queres una naranja?'.
+	aStack := OOStack new push: aStringToMatch.
+	matches := OrderedCollection new.
+	
+	matches add: aStringToMatch.
+	
+	self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = matches.
 ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:21:03'!
-test7FinderNoEncuentraCoincidenciaStack1Elemento
-| aStack aStringToMatch |
-aStringToMatch := 'Uhhhhh, _pepitas_'.
-aStack := OOStack new push: aStringToMatch.
-self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) = (OrderedCollection new).
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 15:58:46'!
+test07FinderNoEncuentraCoincidenciaStack1Elemento
+
+	| aStack aStringToMatch |
+	
+	aStringToMatch := 'Uhhhhh, _pepitas_'.
+	aStack := OOStack new push: aStringToMatch.
+	
+	self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) isEmpty.
 ! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:11:10'!
+test08FinderEncuentraCoincidenciasStackMultiplesElementos
+
+	| aStack aStringToMatch matches |
+	
+	aStringToMatch := 'Fuego tiene'.
+	aStack := self createStackWith10Elements.
+	matches := OrderedCollection new.
+	
+	matches add: 'Fuego tiene'.
+	matches add: 'Fuego tiene?'.
+	matches add: 'Fuego tiene?Lampone sos un dulce de leche'.
+	matches add: 'Fuego tiene?Lampone sos un dulce de leche'.
+
+	self assert: (SentenceFinderByPrefix new find: aStringToMatch inStack: aStack) = matches.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:11:10'!
+test09FinderNoEncuentraCoincidenciasStackMultiplesElementos
+
+	| aStack |
+	
+	aStack := self createStackWith10Elements.
+
+	self assert: (SentenceFinderByPrefix new find: 'Que' inStack: aStack) isEmpty.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:10:56'!
+test10FinderEncuentraCoincidenciasStackTodosLosElementos
+
+	| aStack aStringToMatch matches |
+	
+	aStringToMatch := 'win'.
+	aStack := self createStackWith7ElementsWithTheSamePrefix.
+	matches := OrderedCollection new.
+	
+	{ 'win'. 'winter'. 'winner'. 'winter is coming'. 'windy'. 'winnable'. 'winter is windy' } do: [ :aSentence | matches add: aSentence ].
+	
+	self assert: (SentenceFinderByPrefix new find: aStringToMatch inStack: aStack) = matches.! !
 
 
 !classDefinition: #EmptyStackStatus category: 'Stack-Exercise'!
@@ -324,6 +398,11 @@ Object subclass: #OOStack
 	category: 'Stack-Exercise'!
 
 !OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
+initialize
+
+	collection := OrderedCollection new.! !
+
+!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
 safePop
 	
 	^collection removeLast.! !
@@ -334,41 +413,36 @@ safeTop
 	^collection at: collection size.
 	! !
 
+!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 15:02:00'!
+status
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
-initialize
+	{EmptyStackStatus. NonEmptyStackStatus} detect: [ :stackStatus | stackStatus statusIsValidFor: self ] ifFound: [ :stackStatus | ^stackStatus with: self ] ifNone: [ self error: OOStack stackStatusErrorDescription ].! !
 
-	collection := OrderedCollection new.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 11:24:55'!
 isEmpty
 	
 	^collection isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:26'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 15:02:00'!
 pop
 
-	^self stackStatus pop.! !
+	^self status pop.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:59'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 11:25:59'!
 push: anElement
 	
 	collection add: anElement.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 11:24:55'!
 size
 
 	^collection size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:35:43'!
-stackStatus
-
-	{EmptyStackStatus. NonEmptyStackStatus} detect: [ :stackStatus | stackStatus statusIsValidFor: self ] ifFound: [ :stackStatus | ^stackStatus with: self ] ifNone: [ self error: OOStack stackStatusErrorDescription ].! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:25:26'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 15:02:00'!
 top
 
-	^self stackStatus top.
+	^self status top.
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -395,17 +469,19 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/14/2022 09:00:39'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 16:14:28'!
 find: aPrefix inStack: aStackOfSentences
-	"comment stating purpose of message"
-	| aCollectionOfSentences aSentence |
+
+	| aCollectionOfSentences |
+	
 	aPrefix withBlanksTrimmed = '' 
 		ifTrue: [self error: SentenceFinderByPrefix invalidSyntaxErrorDescription].
+
 	aCollectionOfSentences	:= OrderedCollection new.
-	[aStackOfSentences isEmpty] whileFalse: 
-		[aSentence := aStackOfSentences pop. 
-		aCollectionOfSentences addFirst: aSentence].
-	aCollectionOfSentences do: [:anotherSentence | aStackOfSentences push: anotherSentence].
+	
+	[aStackOfSentences isEmpty ] whileFalse: [aCollectionOfSentences addFirst: aStackOfSentences pop].
+	
+	aCollectionOfSentences do: [:aSentence | aStackOfSentences push: aSentence].
 	^aCollectionOfSentences select: [:anotherSentence | anotherSentence beginsWith: aPrefix].
 	! !
 
