@@ -91,18 +91,18 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:33:40'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/15/2022 13:28:00'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
 	stack := OOStack new.
 	
-	self assertThatABlock: [ stack pop ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
+	self should: [ stack pop ] raise: Error withExceptionDo: [:anError | self assert: anError messageText =  OOStack stackEmptyErrorDescription ].
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:32:47'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/15/2022 13:28:37'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
 	| stack  |
@@ -111,29 +111,112 @@ test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 	stack push: 'something'.
 	stack pop.
 	
-	self assertThatABlock: [  stack pop ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
-		
-! !
+	self should: [  stack pop ] raise: Error withExceptionDo: [:anError | self assert: anError messageText = OOStack stackEmptyErrorDescription ].! !
 
-!OOStackTest methodsFor: 'test' stamp: 'iv 5/14/2022 16:32:16'!
+!OOStackTest methodsFor: 'test' stamp: 'iv 5/15/2022 13:28:45'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
 	stack := OOStack new.
 	
-	self assertThatABlock: [ stack top ] ShouldRaise: [ OOStack stackEmptyErrorDescription ].
+	self should: [ stack top ]  raise: Error withExceptionDo: [:anError | self assert: anError messageText = OOStack stackEmptyErrorDescription ].
 ! !
 
 
-!OOStackTest methodsFor: 'private' stamp: 'iv 5/14/2022 16:31:50'!
-assertThatABlock: aBlock ShouldRaise: anErrorBlock
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 13:28:55'!
+test11CanNotCreateAStackWithZeroCapacity
 
-	self
-		should: aBlock 
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = anErrorBlock value ]! !
+	self should: [OOStack withMaxSize: 0] raise: Error withExceptionDo: [:anError | self assert: anError messageText ='aValue debe ser anInteger mayor a Cero'].! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 12:10:25'!
+test12PopRemovesElementsFromAFullStack
+	| stack pushedObject |
+	
+	stack := OOStack withMaxSize: 1.
+	pushedObject := 'something'.
+	stack push: pushedObject.
+	
+	self assert: stack status class = FullStackStatus.
+	stack pop.
+	self assert: stack isEmpty! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 12:07:35'!
+test13PopReturnsElementsFromAFullStack
+	| stack pushedObject |
+	
+	stack := OOStack withMaxSize: 1.
+	pushedObject := 'something'.
+	stack push: pushedObject.
+	
+	self assert: stack status class = FullStackStatus.
+	
+	self assert: stack pop = pushedObject! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 12:12:44'!
+test14TopReturnsLastPushedObjectFromAFukllStack
+
+	| stack pushedObject |
+	
+	stack := OOStack withMaxSize: 2.
+	pushedObject := 'something'.
+	
+	stack push: 'something else'.
+	stack push: pushedObject.
+	
+	self assert: stack top = pushedObject.
+	! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 12:15:06'!
+test15TopDoesNotRemoveObjectFromAFullStack
+
+	| stack pushedObject |
+	
+	stack := OOStack withMaxSize: 2.
+	pushedObject := 'something'.
+
+	stack push: 'something else'.
+	stack push: pushedObject.
+	
+	self assert: stack size = 2.
+	stack top.
+	self assert: stack size = 2.
+	! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 13:29:01'!
+test16CanNotPushWhenStackIsFull
+
+	| stack  |
+	
+	stack := OOStack withMaxSize: 2.
+	stack push: 'something'.
+	stack push: 'something else'.
+		
+	self should: [ stack push: 'hola'] raise: Error withExceptionDo: [:anError | self assert: anError messageText = OOStack stackFullErrorDescription ].
+		
+! !
+
+!OOStackTest methodsFor: 'fullStackTest' stamp: 'iv 5/15/2022 12:23:09'!
+test17CanPushAfterPopFromAFullStack
+
+	| stack  |
+	
+	stack := OOStack withMaxSize: 2.
+	stack push: 'something'.
+	stack push: 'something else'.
+	
+	self assert: stack status class = FullStackStatus.
+	stack pop.
+	stack push: 'hola'.
+	
+	
+	self assert: stack status class = FullStackStatus.
+
+		
+
+		
+! !
+
 
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
@@ -395,68 +478,69 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'private' stamp: 'jmd 5/15/2022 00:51:08'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:53:33'!
 initialize
-	self initializeWithFixedCapacity: Float infinity! !
 
-!OOStack methodsFor: 'private' stamp: 'jmd 5/15/2022 00:50:10'!
-initializeWithFixedCapacity: givenCapacity
+	self initializeWithMaxCapacity: Float infinity! !
+
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:53:33'!
+initializeWithMaxCapacity: givenCapacity
 
 	collection := OrderedCollection new.
 	capacity := givenCapacity! !
 
-!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:52:55'!
 safePop
 	
-	^collection removeLast.! !
+	^collection removeLast! !
 
-!OOStack methodsFor: 'private' stamp: 'jmd 5/15/2022 00:35:18'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:52:59'!
 safePush: anElement
 	
-	collection add: anElement.! !
+	collection add: anElement! !
 
-!OOStack methodsFor: 'private' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:53:03'!
 safeTop
 
-	^collection at: collection size.
+	^collection at: collection size
 	! !
 
-!OOStack methodsFor: 'private' stamp: 'jmd 5/15/2022 00:41:44'!
+!OOStack methodsFor: 'private' stamp: 'iv 5/15/2022 11:53:08'!
 status
 
-	StackStatus subclasses detect: [ :stackStatus | stackStatus statusIsValidFor: self ] ifFound: [ :stackStatus | ^stackStatus with: self ] ifNone: [ self error: OOStack stackStatusErrorDescription ].! !
+	StackStatus subclasses detect: [ :stackStatus | stackStatus statusIsValidFor: self ] ifFound: [ :stackStatus | ^stackStatus with: self ] ifNone: [ self error: OOStack stackStatusErrorDescription ]! !
 
 
-!OOStack methodsFor: 'public methods' stamp: 'jmd 5/15/2022 00:43:17'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:59'!
 capacity
 
-	^capacity.! !
+	^capacity! !
 
-!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:56'!
 isEmpty
 	
-	^collection isEmpty.! !
+	^collection isEmpty! !
 
-!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 15:02:00'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:54'!
 pop
 
-	^self status pop.! !
+	^self status pop! !
 
-!OOStack methodsFor: 'public methods' stamp: 'jmd 5/15/2022 00:37:57'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:50'!
 push: anElement
 
-	^self status push: anElement.
+	^self status push: anElement
 	! !
 
-!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 11:24:55'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:48'!
 size
 
-	^collection size.! !
+	^collection size! !
 
-!OOStack methodsFor: 'public methods' stamp: 'iv 5/14/2022 15:02:00'!
+!OOStack methodsFor: 'public methods' stamp: 'iv 5/15/2022 11:53:46'!
 top
 
-	^self status top.
+	^self status top
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -480,10 +564,12 @@ stackStatusErrorDescription
 	
 	^ 'Stack status is invalid'! !
 
-!OOStack class methodsFor: 'error descriptions' stamp: 'jmd 5/15/2022 00:49:28'!
+!OOStack class methodsFor: 'error descriptions' stamp: 'iv 5/15/2022 12:49:53'!
 withMaxSize: capacity
 	
-	^OOStack new initializeWithFixedCapacity: capacity! !
+	(capacity isInteger and: capacity > 0) ifFalse: [  self error: 'aValue debe ser anInteger mayor a Cero' ].
+	
+	^OOStack new initializeWithMaxCapacity: capacity! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
@@ -493,20 +579,31 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:53:01'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'iv 5/15/2022 12:58:07'!
+assertPrefixIsValid: aPrefix
+
+		((aPrefix includesSubString: ' ') or: aPrefix = '') ifTrue: [ self error: SentenceFinderByPrefix invalidSyntaxErrorDescription ].! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'iv 5/15/2022 13:10:45'!
+newCollectionWithStackElements: aStack
+	
+	| aCollectionOfSentences |
+	
+	aCollectionOfSentences	:= OrderedCollection new.
+	(aStack size) timesRepeat: [aCollectionOfSentences addFirst: aStack pop].
+	aCollectionOfSentences do: [ :aSentence | aStack push: aSentence ].
+	^aCollectionOfSentences.! !
+
+
+!SentenceFinderByPrefix methodsFor: 'public methods' stamp: 'iv 5/15/2022 13:12:39'!
 find: aPrefix inStack: aStackOfSentences
 
-	| aCollectionOfSentences |
-	"abstraer código para mejorar legibilidad"	
-	((aPrefix includesSubString: ' ') or: aPrefix = '')
-		ifTrue: [ self error: SentenceFinderByPrefix invalidSyntaxErrorDescription ].
-
-	aCollectionOfSentences	:= OrderedCollection new.
-	"usar times repeat, sabiendo que va a iterar una cantidad de veces determinada por el size del Stack"
-	[ aStackOfSentences isEmpty ] whileFalse: [ aCollectionOfSentences addFirst: aStackOfSentences pop ].
+	| aCollectionOfStackSentences |
 	
-	aCollectionOfSentences do: [ :aSentence | aStackOfSentences push: aSentence ].
-	^aCollectionOfSentences select: [ :anotherSentence | anotherSentence beginsWith: aPrefix ].
+	self assertPrefixIsValid: aPrefix.
+	aCollectionOfStackSentences	:= self		newCollectionWithStackElements: aStackOfSentences.
+	
+	^aCollectionOfStackSentences select: [ :anotherSentence | anotherSentence beginsWith: aPrefix ].
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -522,10 +619,30 @@ invalidSyntaxErrorDescription
 
 !classDefinition: #StackStatus category: 'Stack-Exercise'!
 Object subclass: #StackStatus
-	instanceVariableNames: ''
+	instanceVariableNames: 'aStack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!StackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:08'!
+initializeWith: aNewStack
+
+	aStack := aNewStack! !
+
+!StackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:11'!
+pop
+
+	self subclassResponsibility! !
+
+!StackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:15'!
+push: anObject
+
+	self subclassResponsibility! !
+
+!StackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:17'!
+top
+
+	self subclassResponsibility! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -546,15 +663,10 @@ with: aNewStack
 
 !classDefinition: #EmptyStackStatus category: 'Stack-Exercise'!
 StackStatus subclass: #EmptyStackStatus
-	instanceVariableNames: 'aStack'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-
-!EmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:41'!
-initializeWith: aNewStack
-
-	aStack := aNewStack! !
 
 !EmptyStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/14/2022 11:21:29'!
 pop
@@ -585,27 +697,22 @@ statusIsValidFor: aStack
 
 !classDefinition: #FullStackStatus category: 'Stack-Exercise'!
 StackStatus subclass: #FullStackStatus
-	instanceVariableNames: 'aStack'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:27'!
-initializeWith: aNewStack
-
-	aStack := aNewStack! !
-
-!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:21'!
+!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:03'!
 pop
 
 	^aStack safePop! !
 
-!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:11:10'!
+!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:50:01'!
 push: anObject
 
 	^self error: OOStack stackFullErrorDescription! !
 
-!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:24'!
+!FullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:49:58'!
 top
 
 	^aStack safeTop! !
@@ -624,27 +731,22 @@ statusIsValidFor: aStack
 
 !classDefinition: #NonEmptyNorFullStackStatus category: 'Stack-Exercise'!
 StackStatus subclass: #NonEmptyNorFullStackStatus
-	instanceVariableNames: 'aStack'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:51'!
-initializeWith: aNewStack
-
-	aStack := aNewStack! !
-
-!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:55'!
+!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:49:50'!
 pop
 
 	^aStack safePop! !
 
-!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:10:52'!
+!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:49:53'!
 push: anObject
 
 	^aStack safePush: anObject! !
 
-!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'jmd 5/15/2022 00:09:58'!
+!NonEmptyNorFullStackStatus methodsFor: 'as yet unclassified' stamp: 'iv 5/15/2022 11:49:55'!
 top
 
 	^aStack safeTop! !
