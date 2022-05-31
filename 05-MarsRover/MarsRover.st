@@ -1,73 +1,73 @@
 !classDefinition: #MarsRoverTests category: 'MarsRover'!
 TestCase subclass: #MarsRoverTests
-	instanceVariableNames: 'aaaMarsRover'
+	instanceVariableNames: 'aMarsRover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:26:12'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 setUp
-	aaaMarsRover := MarsRover inPosition: 1@2 facing: North! !
+	aMarsRover := MarsRover inPosition: 1@2 facing: North! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:26:32'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test01AnUnmovedMarsRoversPositionMatchesThePositionItWasIntializedIn
-	self assert: aaaMarsRover position equals: 1@2.! !
+	self assert: aMarsRover position equals: 1@2.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:26:48'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test02AnEmptyStringOfCommandsDoesntChangeTheMarsRoverPosition
-	aaaMarsRover executeCommands: ''.
-	self assert: aaaMarsRover position equals: 1@2.! !
+	aMarsRover executeCommands: ''.
+	self assert: aMarsRover position equals: 1@2.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:00'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test03MarsRoverMovesForwardInTheRightDirection
-	aaaMarsRover executeCommands: 'f'.
-	self assert: aaaMarsRover position equals: 1@3.! !
+	aMarsRover executeCommands: 'f'.
+	self assert: aMarsRover position equals: 1@3.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:13'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test04MarsRoverUnderstandsMultipleCommandsInOneString
-	aaaMarsRover executeCommands: 'ff'.
-	self assert: aaaMarsRover position equals: 1@4.! !
+	aMarsRover executeCommands: 'ff'.
+	self assert: aMarsRover position equals: 1@4.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:23'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test05MarsRoverMovesBackwardsInTheRightDirection
-	aaaMarsRover executeCommands: 'b'.
-	self assert: aaaMarsRover position equals: 1@1.! !
+	aMarsRover executeCommands: 'b'.
+	self assert: aMarsRover position equals: 1@1.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:33'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test06InvalidCommandRaisesError
-	self should: [aaaMarsRover executeCommands: 'x'] raise: Error description: MarsRover invalidCommandErrorDescription.! !
+	self should: [aMarsRover executeCommands: 'x'] raise: Error description: MarsRover invalidCommandErrorDescription.! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:41'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test07MarsRoverProcessesAllCommandsPreviousToError
-	self should: [aaaMarsRover executeCommands: 'fx'] raise: Error withExceptionDo: 
-		[ :unusedError | self assert: aaaMarsRover position equals: 1@3]! !
+	self should: [aMarsRover executeCommands: 'fx'] raise: Error withExceptionDo: 
+		[ :unusedError | self assert: aMarsRover position equals: 1@3]! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:27:53'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test08MarsRoverDoesntProcessCommandsAfterError
-	self should: [aaaMarsRover executeCommands: 'fxf'] raise: Error withExceptionDo: 
-		[:unusedError | self assert: aaaMarsRover position equals: 1@3]! !
+	self should: [aMarsRover executeCommands: 'fxf'] raise: Error withExceptionDo: 
+		[:unusedError | self assert: aMarsRover position equals: 1@3]! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:28:01'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test09MarsRoverRotateLeftCorrectly
-	aaaMarsRover executeCommands: 'l'.
-	self assert: aaaMarsRover facingTowards = West! !
+	aMarsRover executeCommands: 'l'.
+	self assert: aMarsRover facingTowards = West! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:28:09'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test10MarsRoverRotateRightCorrectly
-	aaaMarsRover executeCommands: 'r'.
-	self assert: aaaMarsRover facingTowards = East ! !
+	aMarsRover executeCommands: 'r'.
+	self assert: aMarsRover facingTowards = East ! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:28:18'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test11MarsRoverMovesForwardInTheRightDirectionAfterRotateToLeft
-	aaaMarsRover executeCommands: 'l'.
-	aaaMarsRover  executeCommands: 'f'.
-	self assert: aaaMarsRover position = (0@2)! !
+	aMarsRover executeCommands: 'l'.
+	aMarsRover  executeCommands: 'f'.
+	self assert: aMarsRover position = (0@2)! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:28:29'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 14:00:05'!
 test12MarsRoverMovesForwardInTheRightDirectionAfterRotateToRight
-	aaaMarsRover executeCommands: 'r'.
-	aaaMarsRover  executeCommands: 'f'.
-	self assert: aaaMarsRover position = (2@2)! !
+	aMarsRover executeCommands: 'r'.
+	aMarsRover  executeCommands: 'f'.
+	self assert: aMarsRover position = (2@2)! !
 
 
 !classDefinition: #CardinalPoints category: 'MarsRover'!
@@ -203,15 +203,15 @@ stepForward
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position facingTowards'
+	instanceVariableNames: 'position cardinalPointFaced'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'initialization' stamp: 'jmd 5/29/2022 13:50:08'!
+!MarsRover methodsFor: 'initialization' stamp: 'iv 5/31/2022 13:59:24'!
 initializeInPosition: initialPosition facing: aCardinalPoint 
 	position := initialPosition.
-	facingTowards := aCardinalPoint.! !
+	cardinalPointFaced := aCardinalPoint.! !
 
 
 !MarsRover methodsFor: 'accessing' stamp: 'jmd 5/29/2022 13:50:45'!
@@ -239,22 +239,22 @@ moveBackwards
 moveForward
 	position := position + self stepForward.! !
 
-!MarsRover methodsFor: 'Commands' stamp: 'iv 5/29/2022 17:19:49'!
+!MarsRover methodsFor: 'Commands' stamp: 'iv 5/31/2022 13:59:24'!
 stepForward
-	^facingTowards stepForward! !
+	^cardinalPointFaced stepForward! !
 
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 16:43:41'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 13:59:24'!
 facingTowards
-	^facingTowards ! !
+	^cardinalPointFaced ! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 16:55:53'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 13:59:24'!
 turnLeft
-	facingTowards := facingTowards leftCardinalPoint! !
+	cardinalPointFaced := cardinalPointFaced leftCardinalPoint! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/29/2022 17:09:15'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'iv 5/31/2022 13:59:24'!
 turnRight
-	facingTowards := facingTowards rightCardinalPoint ! !
+	cardinalPointFaced := cardinalPointFaced rightCardinalPoint ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
