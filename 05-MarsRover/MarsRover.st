@@ -219,17 +219,14 @@ position
 	^position! !
 
 
-!MarsRover methodsFor: 'Commands' stamp: 'jmd 5/29/2022 14:45:38'!
-executeCommand: aCharacter 
-	aCharacter = $f ifTrue: [ ^self moveForward ].
-	aCharacter = $b ifTrue: [ ^self moveBackwards ].
-	aCharacter = $r ifTrue: [ ^self turnRight ].
-	aCharacter = $l ifTrue: [ ^self turnLeft ].
-	self error: self class invalidCommandErrorDescription.! !
+!MarsRover methodsFor: 'Commands' stamp: 'xcv 6/2/2022 14:20:48'!
+executeCommand: aCharacterCommand 
+	
+	MarsRoverCommands subclasses detect: [ :aMarsRoverCommand | aMarsRoverCommand isValidFor: aCharacterCommand ] ifFound:  [ :aMarsRoverCommand | aMarsRoverCommand executeOn: self] ifNone: [self error: self class invalidCommandErrorDescription].! !
 
-!MarsRover methodsFor: 'Commands' stamp: 'jmd 5/29/2022 14:37:13'!
-executeCommands: aString 
-	aString do: [ :aCharacter | self executeCommand: aCharacter ].! !
+!MarsRover methodsFor: 'Commands' stamp: 'xcv 6/2/2022 13:54:38'!
+executeCommands: aStringOfCommands
+	aStringOfCommands do: [ :aCharacterCommand | self executeCommand: aCharacterCommand ].! !
 
 !MarsRover methodsFor: 'Commands' stamp: 'jmd 5/29/2022 14:43:34'!
 moveBackwards
@@ -270,3 +267,118 @@ inPosition: initialPosition facing: aCardinalPoint
 !MarsRover class methodsFor: 'ErrorDescriptions' stamp: 'jmd 5/29/2022 14:44:42'!
 invalidCommandErrorDescription
 	^'Command not understood'.! !
+
+
+!classDefinition: #MarsRoverCommands category: 'MarsRover'!
+Object subclass: #MarsRoverCommands
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverCommands class' category: 'MarsRover'!
+MarsRoverCommands class
+	instanceVariableNames: ''!
+
+!MarsRoverCommands class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:10:01'!
+executeOn: aMarsRover
+	self subclassResponsibility 
+! !
+
+!MarsRoverCommands class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:12:51'!
+isValidFor: aCharacterCommand
+	self subclassResponsibility ! !
+
+
+!classDefinition: #MarsRoverMoveBackwardsCommand category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverMoveBackwardsCommand
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverMoveBackwardsCommand class' category: 'MarsRover'!
+MarsRoverMoveBackwardsCommand class
+	instanceVariableNames: ''!
+
+!MarsRoverMoveBackwardsCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:11:17'!
+executeOn: aMarsRover
+
+	aMarsRover moveBackwards! !
+
+!MarsRoverMoveBackwardsCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:13:59'!
+isValidFor: aCharacterCommand
+	^aCharacterCommand = $b! !
+
+
+!classDefinition: #MarsRoverMoveForwardCommand category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverMoveForwardCommand
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverMoveForwardCommand class' category: 'MarsRover'!
+MarsRoverMoveForwardCommand class
+	instanceVariableNames: ''!
+
+!MarsRoverMoveForwardCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:11:05'!
+executeOn: aMarsRover
+
+	aMarsRover moveForward! !
+
+!MarsRoverMoveForwardCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:14:09'!
+isValidFor: aCharacterCommand
+	^aCharacterCommand = $f! !
+
+
+!classDefinition: #MarsRoverTurnLeftCommand category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverTurnLeftCommand
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverTurnLeftCommand class' category: 'MarsRover'!
+MarsRoverTurnLeftCommand class
+	instanceVariableNames: ''!
+
+!MarsRoverTurnLeftCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:11:33'!
+executeOn: aMarsRover
+
+	aMarsRover turnLeft ! !
+
+!MarsRoverTurnLeftCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:14:14'!
+isValidFor: aCharacterCommand
+	^aCharacterCommand = $l! !
+
+
+!classDefinition: #MarsRoverTurnRightCommand category: 'MarsRover'!
+MarsRoverCommands subclass: #MarsRoverTurnRightCommand
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MarsRoverTurnRightCommand class' category: 'MarsRover'!
+MarsRoverTurnRightCommand class
+	instanceVariableNames: ''!
+
+!MarsRoverTurnRightCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:11:42'!
+executeOn: aMarsRover
+
+	aMarsRover turnRight ! !
+
+!MarsRoverTurnRightCommand class methodsFor: 'as yet unclassified' stamp: 'xcv 6/2/2022 14:14:18'!
+isValidFor: aCharacterCommand
+	^aCharacterCommand = $r! !
