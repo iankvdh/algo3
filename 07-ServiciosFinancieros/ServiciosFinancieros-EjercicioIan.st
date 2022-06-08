@@ -271,6 +271,52 @@ test22PortfolioKnowsTheTransactionsOfOneOfItsAccountsThatIsContainedInAnotherPor
 	! !
 
 
+!ReceptiveAccountTest methodsFor: 'portfolio extra test' stamp: 'iv 6/7/2022 22:50:09'!
+test23APortfolioCantContainTheSameAccountTwice
+	
+	self should: [Portfolio with: anAccount with: anAccount ] raise: Error withExceptionDo: [:anError | self assert: anError messageText =  Portfolio cantContainTheSameAccountTwiceErrorDescription ].
+
+	
+	
+	
+	
+	
+	! !
+
+!ReceptiveAccountTest methodsFor: 'portfolio extra test' stamp: 'iv 6/7/2022 22:51:32'!
+test24APortfolioCantContainAnOtherPortfolioWhoSharesAnAccountWithIt
+	| aPortfolio anOtherPortfolio |
+
+
+	aPortfolio := Portfolio with: anAccount.
+	
+	anOtherPortfolio := Portfolio with: anAccount . 
+	
+	self should: [anOtherPortfolio add: aPortfolio] raise: Error withExceptionDo: [:anError | self assert: anError messageText =  Portfolio cantContainTheSameAccountTwiceErrorDescription ].
+
+	
+	
+	! !
+
+!ReceptiveAccountTest methodsFor: 'portfolio extra test' stamp: 'iv 6/7/2022 23:12:34'!
+test25
+"No puedo agregar una cuenta a un portfolio cuando este último ya es hijo de otro portfolio padre que tenía dicha cuenta."
+
+
+	
+	
+	! !
+
+!ReceptiveAccountTest methodsFor: 'portfolio extra test' stamp: 'iv 6/7/2022 23:12:42'!
+test26
+"No puedo agregar un portfolio a otro porfolio, si el primero incluye una cuenta que el segundo ya tiene."
+
+
+	
+	
+	! !
+
+
 !ReceptiveAccountTest methodsFor: 'setUp' stamp: 'iv 6/7/2022 12:37:59'!
 setUp
 
@@ -434,50 +480,54 @@ matchingTransfer
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'accounts allAccounts'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 14:51:11'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:32:43'!
 add: item
-	
-	accounts add: item ! !
+	item beAddedTo: self.! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 14:51:34'!
-addAll: aCollectionOfItems
-	accounts addAll: aCollectionOfItems ! !
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:50:34'!
+addAccount: anAcount
+	(allAccounts includes: anAcount) ifTrue: [self error: Portfolio cantContainTheSameAccountTwiceErrorDescription].
+	allAccounts add: anAcount.
+	accounts add: anAcount ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 14:51:50'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:48:49'!
+addAll: aCollectionOfitem
+	aCollectionOfitem do: [:anItem | self add: anItem ]! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:44:35'!
 balance
-	^accounts sum: [:anItem | anItem balance ] ifEmpty: [^0]
+	^allAccounts sum: [:anItem | anItem balance ] ifEmpty: [^0]
 ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 14:51:58'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:40:32'!
+beAddedTo: aPortfolio
+	allAccounts do: [:anAccount | aPortfolio addAccount: anAccount ]! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:46:43'!
 hasRegistered: aTransaction
 
-	accounts do: [:anItem |	 (anItem hasRegistered: aTransaction)  ifTrue: [^true] ].
+	allAccounts do: [:anAccount |	 (anAccount hasRegistered: aTransaction)  ifTrue: [^true] ].
 	^false
 ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 15:42:25'!
-includes: anAccount
-
-	accounts do: [:anItem | (anItem includes: anAccount) ifTrue: [^true ]].
-	^false
-	! !
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 12:33:48'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:45:44'!
 initialize
 	
 	accounts := Set new.
+	allAccounts := Set new.
+	portfolios := Set new.
+
 ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 15:42:25'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:47:06'!
 transactionsOf: anAccount
 
-
-	(self includes: anAccount) ifTrue: [^anAccount transactions ].
+	(allAccounts includes: anAccount) ifTrue: [^anAccount transactions ].
 	
 	self error: Portfolio doesntKnowAccountErrorDescription! !
 
@@ -486,6 +536,10 @@ transactionsOf: anAccount
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
 Portfolio class
 	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:50:15'!
+cantContainTheSameAccountTwiceErrorDescription
+	^ 'Portfolio cant containthe same account twice'! !
 
 !Portfolio class methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 13:15:29'!
 doesntKnowAccountErrorDescription
@@ -541,6 +595,10 @@ transactions
 
 	^ transactions copy! !
 
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 22:38:35'!
+beAddedTo: aPortfolio
+	aPortfolio addAccount: self.! !
 
 !ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'iv 6/7/2022 15:42:13'!
 includes: anAccount
