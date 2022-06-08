@@ -60,7 +60,7 @@ test12AnEmptyPortfolioHasBalanceOf0
 	aPortfolio := Portfolio new.
 	self assert: aPortfolio balance equals: 0.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:01:20'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:33:13'!
 test13BalanceOfAPortfolioWithOneEqualsAccountsBalance
 
 	| aPortfolio anAccount |
@@ -68,10 +68,10 @@ test13BalanceOfAPortfolioWithOneEqualsAccountsBalance
 	anAccount := ReceptiveAccount  new.
 	Deposit register: 100 * peso on: anAccount.
 
-	aPortfolio := Portfolio with: anAccount.
+	aPortfolio := Portfolio withAccount: anAccount.
 	self assert: aPortfolio balance equals: anAccount balance.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:10:12'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:36:54'!
 test14BalanceOfAPortfolioWithManyAccountsEqualsTheSumOfTheAccountsBalance
 
 	| aPortfolio anAccount anotherAccount |
@@ -81,10 +81,11 @@ test14BalanceOfAPortfolioWithManyAccountsEqualsTheSumOfTheAccountsBalance
 	Deposit register: 100 * peso on: anAccount.
 	Deposit register: 20 * peso on: anotherAccount.
 	
-	aPortfolio := Portfolio with: anAccount with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anAccount.
+	aPortfolio addAccount: anotherAccount.
 	self assert: aPortfolio balance equals: anAccount balance + anotherAccount balance.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:14:37'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:37:04'!
 test15PortfolioCanReturnTransactionsOfAnAccount
 
 	| aPortfolio anAccount anotherAccount transactions |
@@ -96,10 +97,11 @@ test15PortfolioCanReturnTransactionsOfAnAccount
 	transactions add: (Deposit register: 100 * peso on: anAccount).
 	transactions add: (Deposit register: 1 * peso on: anAccount).
 	
-	aPortfolio := Portfolio with: anAccount with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anAccount.
+	aPortfolio addAccount: anotherAccount.
 	self assert: (aPortfolio transactionsOf: anAccount) equals: transactions.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:21:02'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:33:53'!
 test16PortfolioRaisesErrorIfAskedTransactionsOfAnAccountItDoesntInclude
 
 	| aPortfolio anAccount anotherAccount transactions |
@@ -111,10 +113,10 @@ test16PortfolioRaisesErrorIfAskedTransactionsOfAnAccountItDoesntInclude
 	transactions add: (Deposit register: 100 * peso on: anAccount).
 	transactions add: (Deposit register: 1 * peso on: anAccount).
 	
-	aPortfolio := Portfolio with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anotherAccount.
 	self should: [aPortfolio transactionsOf: anAccount] raise: Error description: Portfolio ErrorDescriptionAccountNotFound.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:27:04'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:35:48'!
 test17PortfolioHasTransactionsThatBelongToContainedAccounts
 
 	| aPortfolio anAccount anotherAccount aTransaction |
@@ -125,10 +127,11 @@ test17PortfolioHasTransactionsThatBelongToContainedAccounts
 	Deposit register: 100 * peso on: anAccount.
 	aTransaction := Deposit register: 1 * peso on: anAccount.
 	
-	aPortfolio := Portfolio with: anAccount with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anAccount.
+	aPortfolio addAccount: anotherAccount.
 	self assert: (aPortfolio hasRegistered: aTransaction).! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:27:48'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:34:15'!
 test18PortfolioDoesntHaveTransactionsThatDontBelongToContainedAccounts
 
 	| aPortfolio anAccount anotherAccount aTransaction |
@@ -139,10 +142,10 @@ test18PortfolioDoesntHaveTransactionsThatDontBelongToContainedAccounts
 	Deposit register: 100 * peso on: anAccount.
 	aTransaction := Deposit register: 1 * peso on: anAccount.
 	
-	aPortfolio := Portfolio with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anotherAccount.
 	self deny: (aPortfolio hasRegistered: aTransaction).! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:33:53'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:35:57'!
 test19BalanceOfAPortfolioOfPortfoliosEqualsTheSumOfTheBalancesOfTheAccounts
 
 	| aParentPortfolio aPortfolio anotherPortfolio anAccount anotherAccount |
@@ -152,24 +155,55 @@ test19BalanceOfAPortfolioOfPortfoliosEqualsTheSumOfTheBalancesOfTheAccounts
 	anotherAccount := ReceptiveAccount  new.
 	Deposit register: 10 * peso on: anotherAccount.
 
-	aPortfolio := Portfolio with: anAccount.
-	anotherPortfolio := Portfolio with: anotherAccount.
+	aPortfolio := Portfolio withAccount: anAccount.
+	anotherPortfolio := Portfolio withAccount: anotherAccount.
 	
-	aParentPortfolio := Portfolio with: aPortfolio with: anotherPortfolio.
+	aParentPortfolio := Portfolio withAccount: aPortfolio.
+	aPortfolio addAccount: anotherPortfolio.
 	self assert: aParentPortfolio balance equals: anAccount balance + anotherAccount balance.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:43:25'!
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:49:51'!
 test20APortfolioCantContainTheSameAccountTwice
 	| aPortfolio anAccount |
 	
 	anAccount := ReceptiveAccount  new.
-	aPortfolio := Portfolio with: anAccount.
-	
-	self should: [ Portfolio with: aPortfolio with: anAccount ] raise: Error description: Portfolio ErrorDescriptionAccountAlreadyInPortfolio.! !
+	aPortfolio := Portfolio withAccount: anAccount.
+	self should: [ aPortfolio addAccount: anAccount ] raise: Error description: Portfolio ErrorDescriptionAccountAlreadyInPortfolioHierarchy.! !
 
-!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/6/2022 21:36:22'!
-test21APortfolioCantContainItself
-	self assert: false! !
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:49:45'!
+test21CantAddAccountToPortfolioIfAccountAlreadyInSubportfolio
+	| aPortfolio anotherPortfolio anAccount |
+	
+	anAccount := ReceptiveAccount  new.
+	aPortfolio := Portfolio withAccount: anAccount.
+	anotherPortfolio := Portfolio new addPortfolio: aPortfolio.
+	self should: [ anotherPortfolio addAccount: anAccount ] raise: Error description: Portfolio ErrorDescriptionAccountAlreadyInPortfolioHierarchy.! !
+
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:40:57'!
+test22APortfolioCantContainItself
+	| aPortfolio |
+	
+	aPortfolio := Portfolio new.
+	self should: [ aPortfolio addPortfolio: aPortfolio ] raise: Error description: Portfolio ErrorDescriptionPortfolioCantContainItself.! !
+
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 19:59:18'!
+test23CantAddAnAccountToAPortfolioIfParentPortfolioAlreadyContainsAccount
+	| aPortfolio aSubportfolio anAccount |
+	
+	aSubportfolio := Portfolio new.
+	anAccount := ReceptiveAccount  new.
+	aPortfolio := Portfolio withAccount: anAccount.
+	aPortfolio addPortfolio: aSubportfolio.
+	self should: [ aSubportfolio addAccount: anAccount ] raise: Error description: Portfolio ErrorDescriptionAccountAlreadyInPortfolioHierarchy.! !
+
+!ReceptiveAccountTest methodsFor: 'transfer tests' stamp: 'jmd 6/8/2022 20:07:28'!
+test24CantAddPortfolioToHierarchyIfPortfolioContainsAccountsThatAreInHierarchy
+	| aNewPortfolio aParentPortfolio anAccount |
+	
+	anAccount := ReceptiveAccount  new.
+	aParentPortfolio := Portfolio withAccount: anAccount.
+	aNewPortfolio := Portfolio withAccount: anAccount.
+	self should: [ aParentPortfolio addPortfolio: aNewPortfolio ] raise: Error description: Portfolio ErrorDescriptionAccountAlreadyInPortfolioHierarchy.! !
 
 
 !ReceptiveAccountTest methodsFor: 'transaction tests' stamp: 'LL 7/1/2021 03:10:43'!
@@ -405,43 +439,79 @@ matchingTransfer
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'portfolios accounts parents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:47:51'!
-add: anAccount
-	self assertAccountNotInPortfolio: anAccount.
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 20:18:42'!
+addAccount: anAccount
+	self assertPortfolioHierarchyDoesNotIncludeAccount: anAccount.
 	accounts add: anAccount! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:06:23'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 20:20:09'!
+addPortfolio: aNewPortfolio
+	self = aNewPortfolio ifTrue: [ self error: Portfolio ErrorDescriptionPortfolioCantContainItself ].
+	aNewPortfolio assertAccountsIntersectionIsEmptyWithPortfolio: self.
+	portfolios add: aNewPortfolio.
+	aNewPortfolio addTo: self.
+	! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:52:03'!
+addTo: aParentPortfolio
+	parents add: aParentPortfolio! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 20:20:09'!
+assertAccountsIntersectionIsEmptyWithPortfolio: aPortfolio
+	accounts do: [ :aMemberAccount | aPortfolio assertPortfolioHierarchyDoesNotIncludeAccount: aMemberAccount ].
+	portfolios do: [ :aMemberPortfolio | aMemberPortfolio assertAccountsIntersectionIsEmptyWithPortfolio: aPortfolio ].! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 20:17:52'!
+assertPortfolioDoesNotIncludeAccount: anAccount
+
+	( self includes: anAccount ) ifTrue: [self error: Portfolio ErrorDescriptionAccountAlreadyInPortfolioHierarchy].! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 20:18:42'!
+assertPortfolioHierarchyDoesNotIncludeAccount: anAccount
+
+	parents do: [ :aParent | aParent assertPortfolioHierarchyDoesNotIncludeAccount: anAccount ].
+	parents isEmpty ifTrue: [ self assertPortfolioDoesNotIncludeAccount: anAccount ].! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:10:25'!
 balance
+	| subportfoliosBalance subaccountsBalance |
+	
+	subportfoliosBalance := portfolios sum: [ :aPortfolio | aPortfolio balance ] ifEmpty: 0.
+	subaccountsBalance := accounts sum: [ :anAccount | anAccount balance ] ifEmpty: 0.
+	^subportfoliosBalance + subaccountsBalance! !
 
-	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: 0! !
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:26:47'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:08:35'!
 hasRegistered: aTransaction
 
+	portfolios do: [ :aPortfolio | (aPortfolio hasRegistered: aTransaction) ifTrue: [^true] ].
 	accounts do: [ :anAccount | (anAccount hasRegistered: aTransaction) ifTrue: [^true] ].
 	^false 
 ! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 20:56:14'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:07:44'!
+includes: anAccount
+	
+	portfolios do: [ :aMemberPortfolio | (aMemberPortfolio includes: anAccount) ifTrue: [^true] ].
+	(accounts includes: anAccount) ifTrue: [^true].
+	^false! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:52:25'!
 initialize
 
-	accounts := OrderedCollection new! !
+	accounts := OrderedCollection new.
+	portfolios := OrderedCollection new.
+	parents := Set new! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:17:27'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:07:21'!
 transactionsOf: anAccount
-	
-	accounts do: [ :aPortfolioAccount | (aPortfolioAccount includes: anAccount) ifTrue: [^anAccount transactions] ].
+
+	(self includes: anAccount ) ifTrue: [^anAccount transactions].
 	self error: Portfolio ErrorDescriptionAccountNotFound! !
-
-
-!Portfolio methodsFor: 'private' stamp: 'jmd 6/6/2022 21:49:52'!
-assertAccountNotInPortfolio: anAccount
-	TestCase new deny: ( accounts includes: anAccount ).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -449,25 +519,23 @@ assertAccountNotInPortfolio: anAccount
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:01:05'!
-with: anAccount
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jmd 6/8/2022 19:27:48'!
+withAccount: anAccount
 
-	^self new add: anAccount! !
-
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jmd 6/6/2022 21:05:05'!
-with: anAccount with: anotherAccount
-
-	^self new add: anAccount;
-	   		add: anotherAccount! !
+	^self new addAccount: anAccount! !
 
 
-!Portfolio class methodsFor: 'Error descriptions' stamp: 'jmd 6/6/2022 21:43:48'!
-ErrorDescriptionAccountAlreadyInPortfolio
-	^'The account is already in the portfolio'! !
+!Portfolio class methodsFor: 'Error descriptions' stamp: 'jmd 6/8/2022 19:49:24'!
+ErrorDescriptionAccountAlreadyInPortfolioHierarchy
+	^'The account is already in the portfolio hierarchy'! !
 
 !Portfolio class methodsFor: 'Error descriptions' stamp: 'jmd 6/6/2022 21:20:20'!
 ErrorDescriptionAccountNotFound
 	^'Account is not contained in portfolio'! !
+
+!Portfolio class methodsFor: 'Error descriptions' stamp: 'jmd 6/8/2022 19:41:30'!
+ErrorDescriptionPortfolioCantContainItself
+	^'The portfolio cant include itself'! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -494,13 +562,7 @@ hasRegistered: aTransaction
 	^ transactions includes: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'jmd 6/6/2022 21:48:39'!
-includes: anAccount
-
-	^ anAccount == self
-! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'jmd 6/8/2022 19:26:01'!
 register: aTransaction
 
 	transactions add: aTransaction 
