@@ -216,88 +216,81 @@ Balance = 30 * pesos'.
 
 !classDefinition: #AccountTreeReportsTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #AccountTreeReportsTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'myAccount juanAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:05:08'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:52:34'!
 test01PortfolioTreePrinterForAnAccountPrintsTheAccountName
 	
-	| account portfolioTreePrinter |
-	account := ReceptiveAccount named: 'Cuenta mia'.
-	portfolioTreePrinter := PortfolioTreePrinter for: account.
+	| portfolioTreePrinter |
 	
-
+	portfolioTreePrinter := PortfolioTreePrinter for: myAccount.
+	
 	self assert: portfolioTreePrinter showReport equals: 'Cuenta mia'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:05:58'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:53:31'!
 test02PortfolioTreePrinterForAPortfolioPrintsThePortfolioName
 	
-	| portfolio portfolioTreePrinter |
-	portfolio := Portfolio named: 'Portafolio mio'.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	| myPortfolio portfolioTreePrinter |
 	
-
+	myPortfolio := Portfolio named: 'Portafolio mio'.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
+	
 	self assert: portfolioTreePrinter showReport equals: 'Portafolio mio'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:06:54'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:58:23'!
 test03PortfolioTreePrinterShowsContainedAccountsWithIndentation
 	
-	| portfolio portfolioTreePrinter account |
-	account := ReceptiveAccount named: 'Cuenta mia'.
-	portfolio := Portfolio named: 'Portafolio mio' with: account.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
-	
+	| myPortfolio portfolioTreePrinter |
 
+	myPortfolio := Portfolio named: 'Portafolio mio' with: myAccount.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
+	
 	self assert: portfolioTreePrinter showReport equals: 
 'Portafolio mio
 	Cuenta mia'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:08:05'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:54:43'!
 test04PortfolioTreePrinterForPortfolioWithManyAccountsShowsAllOfThem
 	
-	| portfolio portfolioTreePrinter myAccount juanAccount|
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	juanAccount := ReceptiveAccount named: 'Cuenta de Juan'.
-	portfolio := Portfolio named: 'Portafolio mio' with: myAccount with: juanAccount.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
-	
+	| myPortfolio portfolioTreePrinter|
 
+	myPortfolio := Portfolio named: 'Portafolio mio' with: myAccount with: juanAccount.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
+	
 	self assert: portfolioTreePrinter showReport equals: 
 'Portafolio mio
 	Cuenta mia
 	Cuenta de Juan'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:08:41'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:55:11'!
 test05PortfolioTreePrinterForPortfolioWithSubportfolioShowsSubportfolio
 	
-	| portfolio portfolioTreePrinter sonsPortfolio |
+	| myPortfolio portfolioTreePrinter sonsPortfolio |
 
 	sonsPortfolio := Portfolio named: 'Portfolio de hijos'.
-	portfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	myPortfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
 	
-
 	self assert: portfolioTreePrinter showReport equals: 
 'Portafolio mio
 	Portfolio de hijos'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:09:13'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:58:16'!
 test06PortfolioTreePrinterForPortfolioShowsAccountsOfSubportfolio
 	
-	| portfolio portfolioTreePrinter sonsPortfolio juanAccount |
+	| myPortfolio portfolioTreePrinter sonsPortfolio |
 
-	juanAccount := ReceptiveAccount named: 'Cuenta de Juan'.
 	sonsPortfolio := Portfolio named: 'Portfolio de hijos' with: juanAccount.
-	portfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
-	
+	myPortfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
 
 	self assert: portfolioTreePrinter showReport equals: 
 'Portafolio mio
@@ -305,17 +298,14 @@ test06PortfolioTreePrinterForPortfolioShowsAccountsOfSubportfolio
 		Cuenta de Juan'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'jmd 6/16/2022 00:15:22'!
+!AccountTreeReportsTest methodsFor: 'portfolio tree printer test' stamp: 'iv 6/16/2022 11:58:12'!
 test07PortfolioTreePrinterUnindentsCorrectlyAfterShowingSubportfolio
 	
-	| myAccount portfolio portfolioTreePrinter sonsPortfolio juanAccount |
+	| myPortfolio portfolioTreePrinter sonsPortfolio |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	juanAccount := ReceptiveAccount named: 'Cuenta de Juan'.
 	sonsPortfolio := Portfolio named: 'Portfolio de hijos' with: juanAccount.
-	portfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio with: myAccount.
-	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
-	
+	myPortfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio with: myAccount.
+	portfolioTreePrinter := PortfolioTreePrinter for: myPortfolio.
 
 	self assert: portfolioTreePrinter showReport equals: 
 'Portafolio mio
@@ -325,32 +315,35 @@ test07PortfolioTreePrinterUnindentsCorrectlyAfterShowingSubportfolio
 ! !
 
 
-!AccountTreeReportsTest methodsFor: 'portfolio detailed tree printer test' stamp: 'jmd 6/15/2022 01:37:13'!
+!AccountTreeReportsTest methodsFor: 'setUp' stamp: 'iv 6/16/2022 11:52:19'!
+setUp
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	juanAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	! !
+
+
+!AccountTreeReportsTest methodsFor: 'portfolio detailed tree printer test' stamp: 'iv 6/16/2022 11:57:57'!
 test08PortfolioTreePrinterForAnAccountWithoutTransactionsShows0Balance
 	
-	| account portfolioTreePrinter |
-	account := ReceptiveAccount named: 'Cuenta mia'.
-	portfolioTreePrinter := PortfolioDetailedTreePrinter for: account.
-	
+	| portfolioTreePrinter |
 
+	portfolioTreePrinter := PortfolioDetailedTreePrinter for: myAccount.
+	
 	self assert: portfolioTreePrinter showReport equals: 
 'Cuenta mia
 	Balance = 0'.
 ! !
 
-!AccountTreeReportsTest methodsFor: 'portfolio detailed tree printer test' stamp: 'jmd 6/15/2022 01:37:13'!
+!AccountTreeReportsTest methodsFor: 'portfolio detailed tree printer test' stamp: 'iv 6/16/2022 11:57:52'!
 test09PortfolioTreePrinterForAPortfolioShowsTransactionsByAccount
 	
-	| portfolioDetailedTreePrinter myAccount portfolio sonsPortfolio juanAccount |
+	| portfolioDetailedTreePrinter myPortfolio sonsPortfolio |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	juanAccount := ReceptiveAccount named: 'Cuenta de Juan'.
 	Transfer amount: 2 * peso from: juanAccount to: myAccount.
 	
 	sonsPortfolio := Portfolio named: 'Portfolio de hijos' with: juanAccount.
-	portfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio with: myAccount.
-	
-	portfolioDetailedTreePrinter := PortfolioDetailedTreePrinter for: portfolio.
+	myPortfolio := Portfolio named: 'Portafolio mio' with: sonsPortfolio with: myAccount.
+	portfolioDetailedTreePrinter := PortfolioDetailedTreePrinter for: myPortfolio.
 
 	self assert: portfolioDetailedTreePrinter showReport equals: 
 'Portafolio mio
