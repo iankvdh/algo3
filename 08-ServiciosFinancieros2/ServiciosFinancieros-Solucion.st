@@ -816,8 +816,8 @@ addTransactionsTo: aCollectionOfTransactions
 	self subclassResponsibility ! !
 
 
-!Account methodsFor: 'extra' stamp: 'iv 6/14/2022 14:00:26'!
-printOnReport: aReport
+!Account methodsFor: 'extra' stamp: 'jmd 6/15/2022 21:30:24'!
+accept: aReport
 	self subclassResponsibility ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -872,6 +872,10 @@ transactions
 	
 	^transactions ! !
 
+
+!Portfolio methodsFor: 'accounts management' stamp: 'iv 6/14/2022 14:07:48'!
+accounts
+	^accounts copy! !
 
 !Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 11:49:20'!
 accountsIncludes: anAccount
@@ -948,13 +952,10 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'extra' stamp: 'iv 6/14/2022 14:07:48'!
-accounts
-	^accounts copy! !
+!Portfolio methodsFor: 'visiting' stamp: 'jmd 6/15/2022 21:33:53'!
+accept: anAccountVisitor
 
-!Portfolio methodsFor: 'extra' stamp: 'iv 6/14/2022 14:01:02'!
-printOnReport: aReport
-	^aReport printPortfolio: self! !
+	^anAccountVisitor visitPortfolio: self! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1060,9 +1061,10 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'extra' stamp: 'iv 6/14/2022 14:01:32'!
-printOnReport: aReport
-	^aReport printAccount: self! !
+!ReceptiveAccount methodsFor: 'iterating' stamp: 'jmd 6/15/2022 21:33:57'!
+accept: anAccountVisitor
+
+	^anAccountVisitor visitAccount: self! !
 
 
 !classDefinition: #AccountReport category: 'ServiciosFinancieros-Solucion'!
@@ -1108,26 +1110,26 @@ AccountReport subclass: #AccountSummaryReport
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummaryReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 01:43:28'!
-printDeposit: aDeposit
+!AccountSummaryReport methodsFor: 'visiting' stamp: 'jmd 6/15/2022 21:23:47'!
+visitDeposit: aDeposit
 
 	^'Depósito por ' append: (aDeposit value asString)
 ! !
 
-!AccountSummaryReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 01:43:24'!
-printTransferDepositLeg: aTransferDepositLeg
+!AccountSummaryReport methodsFor: 'visiting' stamp: 'jmd 6/15/2022 21:24:19'!
+visitTransferDepositLeg: aTransferDepositLeg
 
 	^'Entrada por transferencia de ' append: aTransferDepositLeg value asString
 	! !
 
-!AccountSummaryReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 01:43:21'!
-printTransferWithdrawLeg: aTransferWithdrawLeg
+!AccountSummaryReport methodsFor: 'visiting' stamp: 'jmd 6/15/2022 21:24:09'!
+visitTransferWithdrawLeg: aTransferWithdrawLeg
 
 	^'Salida por transferencia de ' append: aTransferWithdrawLeg value asString
 	! !
 
-!AccountSummaryReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 01:43:16'!
-printWithdraw: aWithdraw
+!AccountSummaryReport methodsFor: 'visiting' stamp: 'jmd 6/15/2022 21:24:00'!
+visitWithdraw: aWithdraw
 
 	^'Extracción por ' append: aWithdraw value asString
 	! !
@@ -1140,11 +1142,11 @@ initializeFor: anAccountTransactions
 	reportText := ''.! !
 
 
-!AccountSummaryReport methodsFor: 'main protocol' stamp: 'jmd 6/15/2022 01:45:06'!
+!AccountSummaryReport methodsFor: 'main protocol' stamp: 'jmd 6/15/2022 21:30:24'!
 generateReport
 	
 	accountTransactions do: [ :accountTransaction | 
-		reportText := reportText append: (accountTransaction printOnReport: self).
+		reportText := reportText append: (accountTransaction accept: self).
 		reportText := reportText append:  Character newLineCharacter asString
 	].
 	
@@ -1160,62 +1162,58 @@ balance
 
 !classDefinition: #AccountTreeReport category: 'ServiciosFinancieros-Solucion'!
 AccountReport subclass: #AccountTreeReport
-	instanceVariableNames: 'reportLines indentationSize account'
+	instanceVariableNames: 'indentationSize account'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountTreeReport methodsFor: 'initialization' stamp: 'jmd 6/15/2022 01:32:31'!
+!AccountTreeReport methodsFor: 'initialization' stamp: 'jmd 6/15/2022 21:52:26'!
 initializeFor: anAccount
 
 	account := anAccount.
-	reportLines := OrderedCollection new.
 	reportText := ''.
 	indentationSize := 0.! !
 
 
-!AccountTreeReport methodsFor: 'private' stamp: 'jmd 6/15/2022 01:48:49'!
+!AccountTreeReport methodsFor: 'private' stamp: 'jmd 6/15/2022 21:48:44'!
 addNewLine
  
-	reportLines add: Character newLineCharacter asString.
-	indentationSize timesRepeat: [reportLines add: '	']. "adds as many tabs as indentationSize"
+	reportText := reportText append: Character newLineCharacter asString.
+	indentationSize timesRepeat: [reportText := reportText append: '	']. "adds as many tabs as indentationSize"
 
 ! !
 
 
-!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/14/2022 22:27:15'!
-printAccount: anAccount
+!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:54:00'!
+print: printInstructions withTree: aTreeRoot getBranches: closureToGetBranches
+	| treeBranches |
 
-	self subclassResponsibility ! !
-
-!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 02:04:28'!
-printPortfolio: aPortfolio
-
-	self printTree: aPortfolio 
-	content: [ :aClosurePortfolio | aClosurePortfolio accounts ] 
-	how: [ :accounts |
-		accounts do: [:aPortfolioAccount | self addNewLine. aPortfolioAccount printOnReport: self]
-	].
-! !
-
-!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 02:05:58'!
-printTree: aTreeRoot content: getContentInstructions how: printInstructions
-	| treeContent |
-
-	reportLines add: aTreeRoot name.
+	reportText := reportText append: aTreeRoot name.
 	indentationSize := indentationSize + 1.
-	treeContent := getContentInstructions value: aTreeRoot.
-	printInstructions value: treeContent.
+	treeBranches := closureToGetBranches value: aTreeRoot.
+	printInstructions value: treeBranches.
 	indentationSize := indentationSize - 1.
 
 ! !
 
+!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:26:14'!
+visitAccount: anAccount
 
-!AccountTreeReport methodsFor: 'main protocol' stamp: 'jmd 6/15/2022 01:31:52'!
+	self subclassResponsibility ! !
+
+!AccountTreeReport methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:54:00'!
+visitPortfolio: aPortfolio
+
+	self print: [ :accounts | accounts do: [:aPortfolioAccount | self addNewLine. aPortfolioAccount accept: self] ]
+	withTree: aPortfolio
+	getBranches: [ :aPortfolioWithAccounts | aPortfolioWithAccounts accounts ]
+! !
+
+
+!AccountTreeReport methodsFor: 'main protocol' stamp: 'jmd 6/15/2022 21:51:01'!
 generateReport
 	
-	account printOnReport: self.
-	reportLines do: [ :aReportLine | reportText _ reportText append: aReportLine ].
+	account accept: self.
 	! !
 
 
@@ -1226,17 +1224,12 @@ AccountTreeReport subclass: #PortfolioDetailedTreePrinter
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioDetailedTreePrinter methodsFor: 'printing' stamp: 'jmd 6/15/2022 02:04:14'!
-printAccount: anAccount
+!PortfolioDetailedTreePrinter methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:54:00'!
+visitAccount: anAccount
 
-	self printTree: anAccount 
-	content: [ :aClosureAccount | (AccountSummaryReport for: aClosureAccount transactions) showReport ] 
-	how: [ :aSummaryReport |
-		 aSummaryReport linesDo: [ :transactionLine | 
-			self addNewLine.
-			reportLines add: transactionLine
-		]
-	].
+	self print: [ :aSummaryReport | aSummaryReport linesDo: [:transactionLine | self addNewLine. reportText := reportText append: transactionLine] ]
+	withTree: anAccount
+	getBranches: [ :anAccountWithTransactions | (AccountSummaryReport for: anAccountWithTransactions transactions) showReport ] .
 ! !
 
 
@@ -1247,10 +1240,10 @@ AccountTreeReport subclass: #PortfolioTreePrinter
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioTreePrinter methodsFor: 'printing' stamp: 'jmd 6/14/2022 22:30:02'!
-printAccount: anAccount
+!PortfolioTreePrinter methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:50:02'!
+visitAccount: anAccount
 
-	reportLines add: anAccount name
+	reportText := reportText append: anAccount name
 
 	! !
 
@@ -1296,8 +1289,8 @@ value
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'printing' stamp: 'iv 6/13/2022 20:46:55'!
-printOnReport: aReport
+!AccountTransaction methodsFor: 'printing' stamp: 'jmd 6/15/2022 21:30:24'!
+accept: aReport
 	self subclassResponsibility ! !
 
 
@@ -1326,9 +1319,10 @@ value
 	^ value! !
 
 
-!Deposit methodsFor: 'printing' stamp: 'iv 6/13/2022 20:46:31'!
-printOnReport: aReport
-	^aReport printDeposit: self! !
+!Deposit methodsFor: 'iterating' stamp: 'jmd 6/15/2022 21:34:16'!
+accept: aTransactionVisitor
+
+	^aTransactionVisitor visitDeposit: self! !
 
 
 !Deposit methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:02'!
@@ -1413,9 +1407,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'printing' stamp: 'iv 6/13/2022 20:48:17'!
-printOnReport: aReport
-	^aReport printTransferDepositLeg: self! !
+!TransferDepositLeg methodsFor: 'iterating' stamp: 'jmd 6/15/2022 21:34:23'!
+accept: aTransactionVisitor
+
+	^aTransactionVisitor visitTransferDepositLeg: self! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
@@ -1425,9 +1420,10 @@ TransferLeg subclass: #TransferWithdrawLeg
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferWithdrawLeg methodsFor: 'printing' stamp: 'iv 6/13/2022 20:50:41'!
-printOnReport: aReport
-	^aReport printTransferWithdrawLeg: self! !
+!TransferWithdrawLeg methodsFor: 'iterating' stamp: 'jmd 6/15/2022 21:34:28'!
+accept: aTransactionVisitor
+
+	^aTransactionVisitor visitTransferWithdrawLeg: self! !
 
 
 !TransferWithdrawLeg methodsFor: 'accessing' stamp: 'LL 9/20/2020 22:25:47'!
@@ -1461,9 +1457,10 @@ value
 	^ value! !
 
 
-!Withdraw methodsFor: 'printing' stamp: 'iv 6/13/2022 20:52:05'!
-printOnReport: aReport
-	^aReport printWithdraw: self! !
+!Withdraw methodsFor: 'iterating' stamp: 'jmd 6/15/2022 21:34:33'!
+accept: aTransactionVisitor
+
+	^aTransactionVisitor visitWithdraw: self! !
 
 
 !Withdraw methodsFor: 'balance' stamp: 'iv 6/13/2022 11:59:53'!
